@@ -1,0 +1,7 @@
+*/test/**
+.classpath
+.project
+.settings
+*/.classpath
+*/.project
+*/.settings
