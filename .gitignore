@@ -1,4 +1,6 @@
-*/test/**
+*/target/**
+*/YoUser/target/**
+*/YoOffer/target/**
 .classpath
 .project
 .settings
