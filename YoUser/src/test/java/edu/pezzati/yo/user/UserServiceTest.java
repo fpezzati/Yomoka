@@ -3,7 +3,6 @@ package edu.pezzati.yo.user;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
 
 import edu.pezzati.yo.user.model.User;
@@ -20,7 +19,6 @@ public class UserServiceTest {
 
     }
 
-    @Test
     public void createUser() {
 	User user = Mockito.spy(new User());
 	UserService userService = new UserService();
