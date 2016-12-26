@@ -10,10 +10,12 @@
 		<module>YoOffer</module>
 		<module>YoWebClient</module>
 	</modules>
+
 	<properties>
 		<hibernate.ogm>5.0.3.Final</hibernate.ogm>
 		<jackson>2.8.5</jackson>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -36,16 +38,16 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate.ogm</groupId> -->
-<!-- 			<artifactId>hibernate-ogm-mongodb</artifactId> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate.javax.persistence</groupId> -->
-<!-- 			<artifactId>hibernate-jpa-2.1-api</artifactId> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hibernate.ogm</groupId> -->
+		<!-- <artifactId>hibernate-ogm-mongodb</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hibernate.javax.persistence</groupId> -->
+		<!-- <artifactId>hibernate-jpa-2.1-api</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -62,12 +64,12 @@
 				<version>${jackson}</version>
 				<scope>import</scope>
 				<type>pom</type>
-<!-- 				<exclusions> -->
-<!-- 					<exclusion> -->
-<!-- 						<groupId>junit</groupId> -->
-<!-- 						<artifactId>junit</artifactId> -->
-<!-- 					</exclusion> -->
-<!-- 				</exclusions> -->
+				<!-- <exclusions> -->
+				<!-- <exclusion> -->
+				<!-- <groupId>junit</groupId> -->
+				<!-- <artifactId>junit</artifactId> -->
+				<!-- </exclusion> -->
+				<!-- </exclusions> -->
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
