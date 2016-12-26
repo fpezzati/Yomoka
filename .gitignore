@@ -1,6 +1,8 @@
+target/**
 */target/**
 */YoUser/target/**
 */YoOffer/target/**
+*/YoWebClient/target/**
 .classpath
 .project
 .settings
