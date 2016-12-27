@@ -5,13 +5,19 @@ import java.io.IOException;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.pezzati.yo.offer.model.Offer;
 
 public class OfferDeserializationTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private ObjectMapper objectMapper;
     private ObjectId offerId;
@@ -24,6 +30,20 @@ public class OfferDeserializationTest {
 	offerId = new ObjectId();
 	ownerId = new ObjectId();
 	offer = null;
+    }
+
+    @Test
+    public void deserializeNullOffer() throws IOException {
+	offer = null;
+	expectedException.expect(NullPointerException.class);
+	objectMapper.readValue(offer, Offer.class);
+    }
+
+    @Test
+    public void deserializeEmptyStringOffer() throws IOException {
+	offer = "";
+	expectedException.expect(JsonMappingException.class);
+	objectMapper.readValue(offer, Offer.class);
     }
 
     @Test
