@@ -17,6 +17,7 @@
 		<jackson>2.8.5</jackson>
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
 		<jacoco.report>${project.build.directory}/reports</jacoco.report>
+		<sonar.server>http://192.168.99.100:9000</sonar.server>
 	</properties>
 
 	<dependencies>
@@ -147,4 +148,20 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>jdbc:postgresql://localhost/sonar</sonar.jdbc.url>
+				<sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
+				<sonar.jdbc.username>user</sonar.jdbc.username>
+				<sonar.jdbc.password>password</sonar.jdbc.password>
+				<sonar.host.url>${sonar.server}</sonar.host.url>
+			</properties>
+		</profile>
+	</profiles>
 </project>

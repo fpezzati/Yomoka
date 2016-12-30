@@ -38,7 +38,7 @@ public class Offer {
     Double lon;
 
     public Offer() {
-
+	// Empty constructor to be a bean
     }
 
     public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
@@ -58,13 +58,20 @@ public class Offer {
 
     @Override
     public boolean equals(Object obj) {
-	if (obj == null || getClass() != obj.getClass()) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
 	    return false;
 	}
 	final Offer offer = (Offer) obj;
-	return Objects.equals(this.id, offer.id) && Objects.equals(this.title, offer.title)
-		&& Objects.equals(this.desc, offer.desc) && Objects.equals(this.ownerId, offer.ownerId)
-		&& Objects.equals(this.price, offer.price) && Objects.equals(this.lat, offer.lat)
-		&& Objects.equals(this.lon, offer.lon);
+	boolean result = Objects.equals(this.id, offer.id);
+	result = result && Objects.equals(this.title, offer.title);
+	result = result && Objects.equals(this.desc, offer.desc);
+	result = result && Objects.equals(this.ownerId, offer.ownerId);
+	result = result && Objects.equals(this.price, offer.price);
+	result = result && Objects.equals(this.lat, offer.lat);
+	result = result && Objects.equals(this.lon, offer.lon);
+	return result;
     }
 }

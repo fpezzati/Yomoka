@@ -14,6 +14,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.pezzati.yo.offer.model.Offer;
 
+/**
+ * Because Offer will be moved from frontend to backend,
+ * OfferDeserializationTest check that Offer will be correctly deserialized when
+ * received by RESTful service.
+ * 
+ * @author Francesco
+ *
+ */
 public class OfferDeserializationTest {
 
     @Rule

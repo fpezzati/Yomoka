@@ -12,6 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.pezzati.yo.offer.model.Offer;
 
+/**
+ * OfferSerializationTest check that Offer will be serialized as expected when
+ * passed by RESTful service. For example when frontend requests for an Offer.
+ * 
+ * @author Francesco
+ *
+ */
 public class OfferSerializationTest {
 
     @Rule
