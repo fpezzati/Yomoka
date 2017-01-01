@@ -2,6 +2,11 @@ package edu.pezzati.yo.offer.model;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import org.bson.types.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,10 +15,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@Entity
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
 public class Offer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
     @JsonSerialize(using = ObjectIdSerializer.class)
     ObjectId id;

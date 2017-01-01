@@ -1,5 +1,12 @@
 package edu.pezzati.yo.offer;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
@@ -80,11 +87,58 @@ public class OfferTest {
 	Assert.assertNotEquals(expected, actual);
     }
 
+    /**
+     * This test check that Offer is correctly annotated as <a href=
+     * "https://docs.oracle.com/javaee/7/api/javax/persistence/Entity.html">Entity</a>.
+     */
+    @Test
     public void offerIsEntity() {
+	Assert.assertTrue(givenTypeIsAnnotated(Offer.class, Entity.class));
+    }
+
+    /**
+     * This test check that Offer has its id attribute annotated as <a href=
+     * "https://docs.oracle.com/javaee/7/api/javax/persistence/Id.html">Id</a>
+     * and <a href=
+     * "https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html">GeneratedValue</a>
+     */
+    @Test
+    public void offerHasId() {
+	try {
+	    String fieldName = "id";
+	    Assert.assertTrue(givenEntityHasAnnotatedAttribute(Offer.class, fieldName, Id.class, GeneratedValue.class));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail(e.getMessage());
+	}
 
     }
 
-    public void offerHasId() {
+    @SuppressWarnings("rawtypes")
+    private boolean givenTypeIsAnnotated(Class type, Class... annotations) {
+	for (Class annotation : annotations) {
+	    if (!type.isAnnotationPresent(annotation)) {
+		return false;
+	    }
+	}
+	return true;
+    }
 
+    private boolean givenEntityHasAnnotatedAttribute(Class entity, String fieldName, Class... annotations)
+	    throws NoSuchFieldException, SecurityException {
+	Field field = entity.getDeclaredField(fieldName);
+	Annotation[] fieldAnnotations = field.getAnnotations();
+	for (Class annotation : annotations) {
+	    int count = 0;
+	    for (Annotation fieldAnnotation : fieldAnnotations) {
+		if (fieldAnnotation.annotationType().equals(annotation)) {
+		    count++;
+		}
+	    }
+	    if (count == 0) {
+		return false;
+	    }
+	}
+	return true;
     }
 }

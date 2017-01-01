@@ -14,6 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<hibernate.ogm>5.0.3.Final</hibernate.ogm>
+		<hibernate.jpa>1.0.0.Final</hibernate.jpa>
 		<jackson>2.8.5</jackson>
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
 		<jacoco.report>${project.build.directory}/reports</jacoco.report>
@@ -42,16 +43,6 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.hibernate.ogm</groupId> -->
-		<!-- <artifactId>hibernate-ogm-mongodb</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.hibernate.javax.persistence</groupId> -->
-		<!-- <artifactId>hibernate-jpa-2.1-api</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -63,17 +54,16 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.1-api</artifactId>
+				<version>${hibernate.jpa}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.fasterxml.jackson</groupId>
 				<artifactId>jackson-bom</artifactId>
 				<version>${jackson}</version>
 				<scope>import</scope>
 				<type>pom</type>
-				<!-- <exclusions> -->
-				<!-- <exclusion> -->
-				<!-- <groupId>junit</groupId> -->
-				<!-- <artifactId>junit</artifactId> -->
-				<!-- </exclusion> -->
-				<!-- </exclusions> -->
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
