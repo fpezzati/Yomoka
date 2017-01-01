@@ -114,7 +114,7 @@ public class OfferTest {
 
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private boolean givenTypeIsAnnotated(Class type, Class... annotations) {
 	for (Class annotation : annotations) {
 	    if (!type.isAnnotationPresent(annotation)) {
@@ -124,6 +124,7 @@ public class OfferTest {
 	return true;
     }
 
+    @SuppressWarnings("rawtypes")
     private boolean givenEntityHasAnnotatedAttribute(Class entity, String fieldName, Class... annotations)
 	    throws NoSuchFieldException, SecurityException {
 	Field field = entity.getDeclaredField(fieldName);

@@ -3,9 +3,7 @@ package edu.pezzati.yo.offer;
 import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,9 +18,6 @@ import edu.pezzati.yo.offer.model.Offer;
  *
  */
 public class OfferSerializationTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     private ObjectId ownerId;
 
