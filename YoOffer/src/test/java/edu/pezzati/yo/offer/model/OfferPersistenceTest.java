@@ -1,4 +1,4 @@
-package edu.pezzati.yo.offer;
+package edu.pezzati.yo.offer.model;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
