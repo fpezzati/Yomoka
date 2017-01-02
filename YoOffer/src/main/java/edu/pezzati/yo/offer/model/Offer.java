@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.bson.types.ObjectId;
 
@@ -20,66 +25,79 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
 public class Offer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    @JsonSerialize(using = ObjectIdSerializer.class)
-    ObjectId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty
+	@JsonSerialize(using = ObjectIdSerializer.class)
+	ObjectId id;
 
-    @JsonProperty
-    String title;
+	@JsonProperty
+	@Pattern(regexp = "[\\w\\s]*")
+	@Size(min = 0, max = 50)
+	String title;
 
-    @JsonProperty
-    String desc;
+	@JsonProperty
+	@Pattern(regexp = "[\\w\\s]*")
+	@Size(min = 0, max = 200)
+	String desc;
 
-    @JsonProperty
-    @JsonSerialize(using = ObjectIdSerializer.class)
-    ObjectId ownerId;
+	@JsonProperty
+	@JsonSerialize(using = ObjectIdSerializer.class)
+	ObjectId ownerId;
 
-    @JsonProperty
-    Double price;
+	@JsonProperty
+	@Digits(integer = 6, fraction = 2)
+	@DecimalMax("999999.99")
+	@DecimalMin("0")
+	Double price;
 
-    @JsonProperty
-    Double lat;
+	@JsonProperty
+	@Digits(integer = 3, fraction = 2)
+	@DecimalMax("180.00")
+	@DecimalMin("-180.00")
+	Double lat;
 
-    @JsonProperty
-    Double lon;
+	@JsonProperty
+	@Digits(integer = 3, fraction = 2)
+	@DecimalMax("90.00")
+	@DecimalMin("-90.00")
+	Double lon;
 
-    public Offer() {
-	// Empty constructor to be a bean
-    }
-
-    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
-	this.id = id;
-	this.title = title;
-	this.desc = desc;
-	this.ownerId = ownerId;
-	this.price = price;
-	this.lat = lat;
-	this.lon = lon;
-    }
-
-    @Override
-    public int hashCode() {
-	return Objects.hash(id, title, desc, ownerId, price, lat, lon);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
+	public Offer() {
+		// Empty constructor to be a bean
 	}
-	if (getClass() != obj.getClass()) {
-	    return false;
+
+	public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
+		this.id = id;
+		this.title = title;
+		this.desc = desc;
+		this.ownerId = ownerId;
+		this.price = price;
+		this.lat = lat;
+		this.lon = lon;
 	}
-	final Offer offer = (Offer) obj;
-	boolean result = Objects.equals(this.id, offer.id);
-	result = result && Objects.equals(this.title, offer.title);
-	result = result && Objects.equals(this.desc, offer.desc);
-	result = result && Objects.equals(this.ownerId, offer.ownerId);
-	result = result && Objects.equals(this.price, offer.price);
-	result = result && Objects.equals(this.lat, offer.lat);
-	result = result && Objects.equals(this.lon, offer.lon);
-	return result;
-    }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, title, desc, ownerId, price, lat, lon);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Offer offer = (Offer) obj;
+		boolean result = Objects.equals(this.id, offer.id);
+		result = result && Objects.equals(this.title, offer.title);
+		result = result && Objects.equals(this.desc, offer.desc);
+		result = result && Objects.equals(this.ownerId, offer.ownerId);
+		result = result && Objects.equals(this.price, offer.price);
+		result = result && Objects.equals(this.lat, offer.lat);
+		result = result && Objects.equals(this.lon, offer.lon);
+		return result;
+	}
 }

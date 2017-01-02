@@ -4,14 +4,12 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
 	http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
-	<persistence-unit name="yotest" transaction-type="JTA">
+	<persistence-unit name="yotest" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 		<class>edu.pezzati.yo.offer.model.Offer</class>
-		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
-			<property name="hibernate.ogm.datastore.database" value="test" />
+			<property name="hibernate.ogm.datastore.provider" value="fongodb" />
 			<property name="hibernate.ogm.datastore.create_database" value="true" />
-			<property name="hibernate.ogm.datastore.provider" value="FongoDBDatastoreProvider" />
 		</properties>
 	</persistence-unit>
 </persistence>
