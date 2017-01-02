@@ -30,6 +30,10 @@
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.ogm</groupId>
+			<artifactId>hibernate-ogm-mongodb</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
 			<scope>test</scope>
