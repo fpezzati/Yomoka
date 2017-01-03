@@ -15,6 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<hibernate.ogm>5.0.3.Final</hibernate.ogm>
 		<hibernate.jpa>1.0.0.Final</hibernate.jpa>
+		<hibernate.validator>5.3.4.Final</hibernate.validator>
 		<jackson>2.8.5</jackson>
 		<resteasy>3.1.0.Final</resteasy>
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
@@ -55,7 +56,17 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.3.4.Final</version>
+			<version>${hibernate.validator}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator-annotation-processor</artifactId>
+			<version>${hibernate.validator}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator-cdi</artifactId>
+			<version>${hibernate.validator}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.el</groupId>
@@ -66,11 +77,6 @@
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>javax.el</artifactId>
 			<version>2.2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator-cdi</artifactId>
-			<version>5.3.4.Final</version>
 		</dependency>
 		<!-- HIBERNATE VALIDATOR - END -->
 		<dependency>
