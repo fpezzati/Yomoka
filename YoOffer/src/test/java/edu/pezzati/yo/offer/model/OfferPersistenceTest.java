@@ -7,11 +7,15 @@ import javax.persistence.Persistence;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OfferPersistenceTest {
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+
+	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Test
 	public void createNullOffer() {
@@ -19,7 +23,7 @@ public class OfferPersistenceTest {
 		EntityManagerFactory entityMFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
 		EntityManager entityManager = entityMFactory.createEntityManager();
 		Offer offer = null;
-		expectedException.expect(NullPointerException.class);
+		expectedException.expect(IllegalArgumentException.class);
 		entityManager.persist(offer);
 	}
 
