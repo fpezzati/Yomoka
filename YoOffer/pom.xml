@@ -38,5 +38,9 @@
 			<artifactId>fongo</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+		</dependency>
 	</dependencies>
 </project>
