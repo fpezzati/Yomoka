@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -43,6 +44,7 @@ public class Offer {
 
 	@JsonProperty
 	@JsonSerialize(using = ObjectIdSerializer.class)
+	@NotNull
 	ObjectId ownerId;
 
 	@JsonProperty

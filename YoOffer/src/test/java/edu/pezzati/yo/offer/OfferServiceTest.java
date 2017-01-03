@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
 import edu.pezzati.yo.offer.model.Offer;
 
@@ -17,13 +18,23 @@ public class OfferServiceTest {
 	@Test
 	public void createNullOffer() {
 		Offer offer = null;
-		OfferService offerService = new OfferServiceImpl();
+		PersistenceService persistenceService = Mockito.mock(PersistenceService.class);
+		OfferService offerService = new OfferServiceImpl(persistenceService);
 		Response response = offerService.create(offer);
 		Assert.assertEquals(400, response.getStatus());
 	}
 
+	@Test
 	public void createInvalidOffer() {
-
+		Offer offer = new Offer(null, null, null, null, null, 200D, 90D);
+		PersistenceService persistenceService = Mockito.mock(PersistenceService.class);
+		String errorMessage = "Offer is not valid: " + offer.toString();
+		Mockito.when(persistenceService.create(offer)).thenThrow(new IllegalArgumentException(errorMessage));
+		OfferService offerService = new OfferServiceImpl(persistenceService);
+		Response response = offerService.create(offer);
+		Mockito.verify(persistenceService, Mockito.times(1)).create(offer);
+		Assert.assertEquals(400, response.getStatus());
+		Assert.assertEquals(errorMessage, response.getEntity());
 	}
 
 	public void createPartiallyValuedValidOffer() {

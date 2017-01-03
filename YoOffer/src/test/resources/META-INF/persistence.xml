@@ -7,6 +7,7 @@
 	<persistence-unit name="yotest" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 		<class>edu.pezzati.yo.offer.model.Offer</class>
+		<validation-mode>CALLBACK</validation-mode>
 		<properties>
 			<property name="hibernate.ogm.datastore.provider" value="fongo" />
 			<property name="hibernate.ogm.datastore.database" value="test" />

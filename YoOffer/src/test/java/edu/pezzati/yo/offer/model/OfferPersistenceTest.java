@@ -1,9 +1,17 @@
 package edu.pezzati.yo.offer.model;
 
+import java.util.Set;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,18 +25,39 @@ public class OfferPersistenceTest {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
+	private String persistenceUnitName;
+	private EntityManager entityManager;
+	private Offer offer;
+
+	@Before
+	public void init() {
+		persistenceUnitName = "yotest";
+		EntityManagerFactory entityMFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+		entityManager = entityMFactory.createEntityManager();
+	}
+
+	@After
+	public void destroy() {
+		if (entityManager != null) {
+			entityManager.close();
+		}
+	}
+
 	@Test
 	public void createNullOffer() {
-		String persistenceUnitName = "yotest";
-		EntityManagerFactory entityMFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
-		EntityManager entityManager = entityMFactory.createEntityManager();
-		Offer offer = null;
+		offer = null;
 		expectedException.expect(IllegalArgumentException.class);
 		entityManager.persist(offer);
 	}
 
+	@Test
 	public void createInvalidOffer() {
-
+		Offer offer = new Offer();
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		Set<ConstraintViolation<Offer>> validate = validator.validate(offer);
+		expectedException.expect(IllegalArgumentException.class);
+		entityManager.persist(offer);
 	}
 
 	public void createOffer() {
