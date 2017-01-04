@@ -147,8 +147,14 @@ public class OfferServiceTest {
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
-	public void updateOfferByExistingAndValidOne() {
-
+	@Test
+	public void updateOfferByExistingAndValidOne() throws OfferNotFound {
+		ObjectId offerId = new ObjectId();
+		ObjectId ownerId = new ObjectId();
+		offer = new Offer(offerId, "title", "desc", ownerId, 1D, 2D, 3D);
+		Mockito.when(persistenceService.update(offer)).thenReturn(offer);
+		Response response = offerService.update(offer);
+		Assert.assertEquals(OK, response.getStatus());
 	}
 
 	public void deleteOfferByNullValue() {
