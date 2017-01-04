@@ -26,136 +26,136 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
 public class Offer {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty
-	@JsonSerialize(using = ObjectIdSerializer.class)
-	private ObjectId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
+    @JsonSerialize(using = ObjectIdSerializer.class)
+    private ObjectId id;
 
-	@JsonProperty
-	@Pattern(regexp = "[\\w\\s]*")
-	@Size(min = 0, max = 50)
-	private String title;
+    @JsonProperty
+    @Pattern(regexp = "[\\w\\s]*")
+    @Size(min = 0, max = 50)
+    private String title;
 
-	@JsonProperty
-	@Pattern(regexp = "[\\w\\s]*")
-	@Size(min = 0, max = 200)
-	private String desc;
+    @JsonProperty
+    @Pattern(regexp = "[\\w\\s]*")
+    @Size(min = 0, max = 200)
+    private String desc;
 
-	@JsonProperty
-	@JsonSerialize(using = ObjectIdSerializer.class)
-	@NotNull
-	private ObjectId ownerId;
+    @JsonProperty
+    @JsonSerialize(using = ObjectIdSerializer.class)
+    @NotNull
+    private ObjectId ownerId;
 
-	@JsonProperty
-	@Digits(integer = 6, fraction = 2)
-	@DecimalMax("999999.99")
-	@DecimalMin("0")
-	private Double price;
+    @JsonProperty
+    @Digits(integer = 6, fraction = 2)
+    @DecimalMax("999999.99")
+    @DecimalMin("0")
+    private Double price;
 
-	@JsonProperty
-	@Digits(integer = 3, fraction = 2)
-	@DecimalMax("180.00")
-	@DecimalMin("-180.00")
-	private Double lat;
+    @JsonProperty
+    @Digits(integer = 3, fraction = 2)
+    @DecimalMax("180.00")
+    @DecimalMin("-180.00")
+    private Double lat;
 
-	@JsonProperty
-	@Digits(integer = 3, fraction = 2)
-	@DecimalMax("90.00")
-	@DecimalMin("-90.00")
-	private Double lon;
+    @JsonProperty
+    @Digits(integer = 3, fraction = 2)
+    @DecimalMax("90.00")
+    @DecimalMin("-90.00")
+    private Double lon;
 
-	public Offer() {
-		// Empty constructor to be a bean
+    public Offer() {
+	// Empty constructor to be an entity.
+    }
+
+    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
+	this.id = id;
+	this.title = title;
+	this.desc = desc;
+	this.ownerId = ownerId;
+	this.price = price;
+	this.lat = lat;
+	this.lon = lon;
+    }
+
+    public ObjectId getId() {
+	return id;
+    }
+
+    public void setId(ObjectId id) {
+	this.id = id;
+    }
+
+    public String getTitle() {
+	return title;
+    }
+
+    public void setTitle(String title) {
+	this.title = title;
+    }
+
+    public String getDesc() {
+	return desc;
+    }
+
+    public void setDesc(String desc) {
+	this.desc = desc;
+    }
+
+    public ObjectId getOwnerId() {
+	return ownerId;
+    }
+
+    public void setOwnerId(ObjectId ownerId) {
+	this.ownerId = ownerId;
+    }
+
+    public Double getPrice() {
+	return price;
+    }
+
+    public void setPrice(Double price) {
+	this.price = price;
+    }
+
+    public Double getLat() {
+	return lat;
+    }
+
+    public void setLat(Double lat) {
+	this.lat = lat;
+    }
+
+    public Double getLon() {
+	return lon;
+    }
+
+    public void setLon(Double lon) {
+	this.lon = lon;
+    }
+
+    @Override
+    public int hashCode() {
+	return Objects.hash(id, title, desc, ownerId, price, lat, lon);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
 	}
-
-	public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
-		this.id = id;
-		this.title = title;
-		this.desc = desc;
-		this.ownerId = ownerId;
-		this.price = price;
-		this.lat = lat;
-		this.lon = lon;
+	if (getClass() != obj.getClass()) {
+	    return false;
 	}
-
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public ObjectId getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(ObjectId ownerId) {
-		this.ownerId = ownerId;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public Double getLat() {
-		return lat;
-	}
-
-	public void setLat(Double lat) {
-		this.lat = lat;
-	}
-
-	public Double getLon() {
-		return lon;
-	}
-
-	public void setLon(Double lon) {
-		this.lon = lon;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, title, desc, ownerId, price, lat, lon);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final Offer offer = (Offer) obj;
-		boolean result = Objects.equals(this.id, offer.id);
-		result = result && Objects.equals(this.title, offer.title);
-		result = result && Objects.equals(this.desc, offer.desc);
-		result = result && Objects.equals(this.ownerId, offer.ownerId);
-		result = result && Objects.equals(this.price, offer.price);
-		result = result && Objects.equals(this.lat, offer.lat);
-		result = result && Objects.equals(this.lon, offer.lon);
-		return result;
-	}
+	final Offer offer = (Offer) obj;
+	boolean result = Objects.equals(this.id, offer.id);
+	result = result && Objects.equals(this.title, offer.title);
+	result = result && Objects.equals(this.desc, offer.desc);
+	result = result && Objects.equals(this.ownerId, offer.ownerId);
+	result = result && Objects.equals(this.price, offer.price);
+	result = result && Objects.equals(this.lat, offer.lat);
+	result = result && Objects.equals(this.lon, offer.lon);
+	return result;
+    }
 }

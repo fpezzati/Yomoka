@@ -8,10 +8,11 @@ import edu.pezzati.yo.offer.model.Offer;
 
 public interface OfferService {
 
-	Response create(Offer offer);
+    Response create(Offer offer);
 
-	Response read(ObjectId offerId);
+    Response read(ObjectId offerId);
 
-	Response update(Offer offer);
+    Response update(Offer offer);
 
+    Response delete(ObjectId offerId);
 }
