@@ -30,40 +30,40 @@ public class Offer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty
 	@JsonSerialize(using = ObjectIdSerializer.class)
-	ObjectId id;
+	private ObjectId id;
 
 	@JsonProperty
 	@Pattern(regexp = "[\\w\\s]*")
 	@Size(min = 0, max = 50)
-	String title;
+	private String title;
 
 	@JsonProperty
 	@Pattern(regexp = "[\\w\\s]*")
 	@Size(min = 0, max = 200)
-	String desc;
+	private String desc;
 
 	@JsonProperty
 	@JsonSerialize(using = ObjectIdSerializer.class)
 	@NotNull
-	ObjectId ownerId;
+	private ObjectId ownerId;
 
 	@JsonProperty
 	@Digits(integer = 6, fraction = 2)
 	@DecimalMax("999999.99")
 	@DecimalMin("0")
-	Double price;
+	private Double price;
 
 	@JsonProperty
 	@Digits(integer = 3, fraction = 2)
 	@DecimalMax("180.00")
 	@DecimalMin("-180.00")
-	Double lat;
+	private Double lat;
 
 	@JsonProperty
 	@Digits(integer = 3, fraction = 2)
 	@DecimalMax("90.00")
 	@DecimalMin("-90.00")
-	Double lon;
+	private Double lon;
 
 	public Offer() {
 		// Empty constructor to be a bean
@@ -76,6 +76,62 @@ public class Offer {
 		this.ownerId = ownerId;
 		this.price = price;
 		this.lat = lat;
+		this.lon = lon;
+	}
+
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public ObjectId getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(ObjectId ownerId) {
+		this.ownerId = ownerId;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getLat() {
+		return lat;
+	}
+
+	public void setLat(Double lat) {
+		this.lat = lat;
+	}
+
+	public Double getLon() {
+		return lon;
+	}
+
+	public void setLon(Double lon) {
 		this.lon = lon;
 	}
 
