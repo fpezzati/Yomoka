@@ -80,7 +80,7 @@
 		<!-- HIBERNATE VALIDATOR - END -->
 		<dependency>
 			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
+			<artifactId>weld-se</artifactId>
 			<version>2.4.1.Final</version>
 		</dependency>
 	</dependencies>

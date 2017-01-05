@@ -5,8 +5,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.pezzati.yo.offer.model.Offer;
 
@@ -15,16 +13,14 @@ public class PersistenceServiceTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
-
 	private static String persistenceUnitName;
-	private static PersistenceService persistenceService;
+	private static OfferPersistenceService persistenceService;
 	private Offer offer;
 
 	@BeforeClass
 	public static void init() {
 		persistenceUnitName = "yotest";
-		persistenceService = PersistenceServiceImpl.getInstance(persistenceUnitName);
+		persistenceService = new OfferPersistenceServiceImpl(persistenceUnitName);
 	}
 
 	@AfterClass

@@ -5,7 +5,7 @@ import org.bson.types.ObjectId;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 
-public interface PersistenceService {
+public interface OfferPersistenceService {
 
     public Offer create(Offer offer);
 
