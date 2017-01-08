@@ -13,28 +13,29 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 
 @Path("/offer")
 public interface OfferService {
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	Response create(Offer offer);
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response create(Offer offer);
 
-	@GET
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	Response read(@PathParam("id") ObjectId offerId);
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response read(@PathParam("id") ObjectId offerId) throws OfferNotFound;
 
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	Response update(Offer offer);
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response update(Offer offer) throws OfferNotFound;
 
-	@DELETE
-	@Path("/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	Response delete(@PathParam("id") ObjectId offerId);
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response delete(@PathParam("id") ObjectId offerId) throws OfferNotFound;
 }

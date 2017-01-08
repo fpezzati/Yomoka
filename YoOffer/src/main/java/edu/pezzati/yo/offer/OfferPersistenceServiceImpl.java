@@ -22,82 +22,83 @@ import edu.pezzati.yo.offer.model.Offer;
 @ApplicationScoped
 public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 
-	private Validator validator;
-	private EntityManager entityM;
+    private Validator validator;
 
-	public OfferPersistenceServiceImpl(String persistenceUnitName) {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		validator = factory.getValidator();
-		EntityManagerFactory entityMFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
-		entityM = entityMFactory.createEntityManager();
-	}
+    private EntityManager entityM;
 
-	@Override
-	public Offer create(Offer offer) {
-		evaluateValidation(validator.validate(offer));
-		EntityTransaction transaction = entityM.getTransaction();
-		transaction.begin();
-		entityM.persist(offer);
-		entityM.refresh(offer);
-		transaction.commit();
-		return offer;
-	}
+    public OfferPersistenceServiceImpl(String persistenceUnitName) {
+	ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	validator = factory.getValidator();
+	EntityManagerFactory entityMFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+	entityM = entityMFactory.createEntityManager();
+    }
 
-	@Override
-	public Offer read(ObjectId id) throws OfferNotFound {
-		Offer offer = entityM.find(Offer.class, id);
-		if (offer == null) {
-			throw new OfferNotFound();
-		} else {
-			return offer;
-		}
-	}
+    @Override
+    public Offer create(Offer offer) {
+	evaluateValidation(validator.validate(offer));
+	EntityTransaction transaction = entityM.getTransaction();
+	transaction.begin();
+	entityM.persist(offer);
+	entityM.refresh(offer);
+	transaction.commit();
+	return offer;
+    }
 
-	@Override
-	public Offer update(Offer offer) throws OfferNotFound {
-		if (offer.getId() == null)
-			throw new IllegalArgumentException("Invalid offer: " + offer.toString());
-		evaluateValidation(validator.validate(offer));
-		EntityTransaction transaction = entityM.getTransaction();
-		transaction.begin();
-		Offer foundOffer = entityM.find(Offer.class, offer.getId());
-		if (foundOffer == null)
-			throw new OfferNotFound();
-		entityM.merge(offer);
-		entityM.refresh(offer);
-		transaction.commit();
-		return offer;
+    @Override
+    public Offer read(ObjectId id) throws OfferNotFound {
+	Offer offer = entityM.find(Offer.class, id);
+	if (offer == null) {
+	    throw new OfferNotFound();
+	} else {
+	    return offer;
 	}
+    }
 
-	@Override
-	public Offer delete(ObjectId offerId) throws OfferNotFound {
-		if (offerId == null) {
-			throw new IllegalArgumentException();
-		}
-		EntityTransaction transaction = entityM.getTransaction();
-		transaction.begin();
-		Offer offer = entityM.find(Offer.class, offerId);
-		if (offer == null)
-			throw new OfferNotFound();
-		entityM.merge(offer);
-		entityM.refresh(offer);
-		transaction.commit();
-		return offer;
-	}
+    @Override
+    public Offer update(Offer offer) throws OfferNotFound {
+	if (offer.getId() == null)
+	    throw new IllegalArgumentException("Invalid offer: " + offer.toString());
+	evaluateValidation(validator.validate(offer));
+	EntityTransaction transaction = entityM.getTransaction();
+	transaction.begin();
+	Offer foundOffer = entityM.find(Offer.class, offer.getId());
+	if (foundOffer == null)
+	    throw new OfferNotFound();
+	entityM.merge(offer);
+	entityM.refresh(offer);
+	transaction.commit();
+	return offer;
+    }
 
-	@Override
-	public void dispose() {
-		entityM.close();
+    @Override
+    public Offer delete(ObjectId offerId) throws OfferNotFound {
+	if (offerId == null) {
+	    throw new IllegalArgumentException();
 	}
+	EntityTransaction transaction = entityM.getTransaction();
+	transaction.begin();
+	Offer offer = entityM.find(Offer.class, offerId);
+	if (offer == null)
+	    throw new OfferNotFound();
+	entityM.merge(offer);
+	entityM.refresh(offer);
+	transaction.commit();
+	return offer;
+    }
 
-	private void evaluateValidation(Set<ConstraintViolation<Offer>> validationResult) {
-		if (validationResult.isEmpty())
-			return;
-		StringBuilder errorMessage = new StringBuilder();
-		for (ConstraintViolation<Offer> violation : validationResult) {
-			errorMessage.append(violation.getMessage());
-			errorMessage.append(", ");
-		}
-		throw new IllegalArgumentException(errorMessage.toString());
+    @Override
+    public void dispose() {
+	entityM.close();
+    }
+
+    private void evaluateValidation(Set<ConstraintViolation<Offer>> validationResult) {
+	if (validationResult.isEmpty())
+	    return;
+	StringBuilder errorMessage = new StringBuilder();
+	for (ConstraintViolation<Offer> violation : validationResult) {
+	    errorMessage.append(violation.getMessage());
+	    errorMessage.append(", ");
 	}
+	throw new IllegalArgumentException(errorMessage.toString());
+    }
 }
