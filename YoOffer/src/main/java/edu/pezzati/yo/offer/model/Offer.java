@@ -73,6 +73,11 @@ public class Offer {
 	this.id = id;
 	this.title = title;
 	this.desc = desc;
+	/**
+	 * Here is a SONAR false positive about missing initialization of this
+	 * not null field. It is a bug as reported <a href=
+	 * "https://jira.sonarsource.com/browse/SONARJAVA-1681">here</a>.
+	 */
 	this.ownerId = ownerId;
 	this.price = price;
 	this.lat = lat;
