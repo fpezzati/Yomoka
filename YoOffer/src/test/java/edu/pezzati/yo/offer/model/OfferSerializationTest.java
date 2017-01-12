@@ -8,8 +8,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.pezzati.yo.offer.model.Offer;
-
 /**
  * OfferSerializationTest check that Offer will be serialized as expected when
  * passed by RESTful service. For example when frontend requests for an Offer.
@@ -51,7 +49,7 @@ public class OfferSerializationTest {
     public void serializeFullyValuedOffer() throws JsonProcessingException {
 	ObjectId offerId = new ObjectId();
 	offer = new Offer(offerId, "some title", "some desc", ownerId, 10D, 10D, 10D);
-	String expected = "{\"id\":\"" + offerId.toString()
+	String expected = "{\"_id\":\"" + offerId.toString()
 		+ "\",\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\"" + ownerId.toString()
 		+ "\",\"price\":10.0,\"lat\":10.0,\"lon\":10.0}";
 	String actual = objectMapper.writeValueAsString(offer);

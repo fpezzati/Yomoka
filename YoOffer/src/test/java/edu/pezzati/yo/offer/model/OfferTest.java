@@ -28,191 +28,147 @@ import edu.pezzati.yo.offer.util.AnnotationResolver;
  */
 public class OfferTest {
 
-	private ObjectId offerId;
-	private String title;
-	private String desc;
-	private ObjectId ownerId;
-	private Double price;
-	private Double lat;
-	private Double lon;
+    private ObjectId offerId;
+    private String title;
+    private String desc;
+    private ObjectId ownerId;
+    private Double price;
+    private Double lat;
+    private Double lon;
 
-	@Before
-	public void init() {
-		offerId = new ObjectId();
-		title = "title";
-		desc = "desc";
-		ownerId = new ObjectId();
-		price = 10D;
-		lat = 10D;
-		lon = 10D;
-	}
+    @Before
+    public void init() {
+	offerId = new ObjectId();
+	title = "title";
+	desc = "desc";
+	ownerId = new ObjectId();
+	price = 10D;
+	lat = 10D;
+	lon = 10D;
+    }
 
-	@Test
-	public void equalsHashCode() {
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Assert.assertEquals(expected.hashCode(), actual.hashCode());
-	}
+    @Test
+    public void equalsHashCode() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Assert.assertEquals(expected.hashCode(), actual.hashCode());
+    }
 
-	@Test
-	public void notEqualsHashCode() {
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		double anotherLon = 20D;
-		Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, anotherLon);
-		Assert.assertNotEquals(expected.hashCode(), actual.hashCode());
-	}
+    @Test
+    public void notEqualsHashCode() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	double anotherLon = 20D;
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, anotherLon);
+	Assert.assertNotEquals(expected.hashCode(), actual.hashCode());
+    }
 
-	@Test
-	public void equalsOffer() {
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Assert.assertEquals(expected, actual);
-	}
+    @Test
+    public void equalsOffer() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Assert.assertEquals(expected, actual);
+    }
 
-	@Test
-	public void equalsNull() {
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Offer actual = null;
-		Assert.assertNotEquals(expected, actual);
-	}
+    @Test
+    public void equalsNull() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = null;
+	Assert.assertNotEquals(expected, actual);
+    }
 
-	@Test
-	public void notEquals() {
-		String anotherTitle = "another title";
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Offer actual = new Offer(offerId, anotherTitle, desc, ownerId, price, lat, lon);
-		Assert.assertNotEquals(expected, actual);
-	}
+    @Test
+    public void notEquals() {
+	String anotherTitle = "another title";
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, anotherTitle, desc, ownerId, price, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
 
-	@Test
-	public void offerEqualsObject() {
-		Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-		Object actual = new Object();
-		Assert.assertNotEquals(expected, actual);
-	}
+    @Test
+    public void offerEqualsObject() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Object actual = new Object();
+	Assert.assertNotEquals(expected, actual);
+    }
 
-	@Test
-	public void offerMustHaveEntityAnnotation() {
-		Assert.assertTrue(AnnotationResolver.givenTypeIsAnnotated(Offer.class, Entity.class));
-	}
+    @Test
+    public void offerMustHaveEntityAnnotation() {
+	Assert.assertTrue(AnnotationResolver.givenTypeIsAnnotated(Offer.class, Entity.class));
+    }
 
-	@Test
-	public void offerIdMustHaveIdAndGeneratedValueAnnotations() throws Exception {
-		String fieldName = "id";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Assert.assertTrue(AnnotationResolver.givenFieldIsAnnotated(field, Id.class, GeneratedValue.class));
-	}
+    @Test
+    public void offerIdMustHaveIdAndGeneratedValueAnnotations() throws Exception {
+	String fieldName = "_id";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Assert.assertTrue(AnnotationResolver.givenFieldIsAnnotated(field, Id.class, GeneratedValue.class));
+    }
 
-	@Test
-	public void offerTitleMustHavePatternAndSizeAnnotations() throws Exception {
-		String fieldName = "title";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Pattern pattern = (Pattern) AnnotationResolver.getFieldAnnotationByType(field, Pattern.class);
-		Assert.assertEquals("[\\w\\s]*", pattern.regexp());
+    @Test
+    public void offerTitleMustHavePatternAndSizeAnnotations() throws Exception {
+	String fieldName = "title";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Pattern pattern = (Pattern) AnnotationResolver.getFieldAnnotationByType(field, Pattern.class);
+	Assert.assertEquals("[\\w\\s]*", pattern.regexp());
 
-		Size size = (Size) AnnotationResolver.getFieldAnnotationByType(field, Size.class);
-		Assert.assertEquals(50, size.max());
-		Assert.assertEquals(0, size.min());
-	}
+	Size size = (Size) AnnotationResolver.getFieldAnnotationByType(field, Size.class);
+	Assert.assertEquals(50, size.max());
+	Assert.assertEquals(0, size.min());
+    }
 
-	@Test
-	public void offerDescriptionMustHavePatternAndSizeAnnotations() throws Exception {
-		String fieldName = "desc";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Pattern pattern = (Pattern) AnnotationResolver.getFieldAnnotationByType(field, Pattern.class);
-		Assert.assertEquals("[\\w\\s]*", pattern.regexp());
+    @Test
+    public void offerDescriptionMustHavePatternAndSizeAnnotations() throws Exception {
+	String fieldName = "desc";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Pattern pattern = (Pattern) AnnotationResolver.getFieldAnnotationByType(field, Pattern.class);
+	Assert.assertEquals("[\\w\\s]*", pattern.regexp());
 
-		Size size = (Size) AnnotationResolver.getFieldAnnotationByType(field, Size.class);
-		Assert.assertEquals(200, size.max());
-		Assert.assertEquals(0, size.min());
-	}
+	Size size = (Size) AnnotationResolver.getFieldAnnotationByType(field, Size.class);
+	Assert.assertEquals(200, size.max());
+	Assert.assertEquals(0, size.min());
+    }
 
-	@Test
-	public void offerPriceMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
-		String fieldName = "price";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
-		Assert.assertEquals(6, digits.integer());
-		Assert.assertEquals(2, digits.fraction());
+    @Test
+    public void offerPriceMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
+	String fieldName = "price";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
+	Assert.assertEquals(6, digits.integer());
+	Assert.assertEquals(2, digits.fraction());
 
-		DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
-		Assert.assertEquals("999999.99", decimalMax.value());
+	DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
+	Assert.assertEquals("999999.99", decimalMax.value());
 
-		DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
-		Assert.assertEquals("0", decimalMin.value());
-	}
+	DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
+	Assert.assertEquals("0", decimalMin.value());
+    }
 
-	@Test
-	public void offerLatMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
-		String fieldName = "lat";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
-		Assert.assertEquals(3, digits.integer());
-		Assert.assertEquals(2, digits.fraction());
+    @Test
+    public void offerLatMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
+	String fieldName = "lat";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
+	Assert.assertEquals(3, digits.integer());
+	Assert.assertEquals(8, digits.fraction());
 
-		DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
-		Assert.assertEquals("180.00", decimalMax.value());
+	DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
+	Assert.assertEquals("180.00", decimalMax.value());
 
-		DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
-		Assert.assertEquals("-180.00", decimalMin.value());
-	}
+	DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
+	Assert.assertEquals("-180.00", decimalMin.value());
+    }
 
-	@Test
-	public void offerLonMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
-		String fieldName = "lon";
-		Field field = Offer.class.getDeclaredField(fieldName);
-		Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
-		Assert.assertEquals(3, digits.integer());
-		Assert.assertEquals(2, digits.fraction());
+    @Test
+    public void offerLonMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
+	String fieldName = "lon";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Digits digits = (Digits) AnnotationResolver.getFieldAnnotationByType(field, Digits.class);
+	Assert.assertEquals(3, digits.integer());
+	Assert.assertEquals(8, digits.fraction());
 
-		DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
-		Assert.assertEquals("90.00", decimalMax.value());
+	DecimalMax decimalMax = (DecimalMax) AnnotationResolver.getFieldAnnotationByType(field, DecimalMax.class);
+	Assert.assertEquals("90.00", decimalMax.value());
 
-		DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
-		Assert.assertEquals("-90.00", decimalMin.value());
-	}
-
-	// @SuppressWarnings({ "rawtypes", "unchecked" })
-	// private boolean givenTypeIsAnnotated(Class type, Class... annotations) {
-	// for (Class annotation : annotations) {
-	// if (!type.isAnnotationPresent(annotation)) {
-	// return false;
-	// }
-	// }
-	// return true;
-	// }
-
-	// @SuppressWarnings("rawtypes")
-	// private boolean givenTypeHasAnnotatedAttribute(Class type, String
-	// fieldName, Class... annotations) {
-	// Field field;
-	// try {
-	// field = type.getDeclaredField(fieldName);
-	// } catch (Exception e) {
-	// return false;
-	// }
-	// Annotation[] fieldAnnotations = field.getAnnotations();
-	// for (Class annotation : annotations) {
-	// int count = 0;
-	// for (Annotation fieldAnnotation : fieldAnnotations) {
-	// if (fieldAnnotation.annotationType().equals(annotation)) {
-	// count++;
-	// }
-	// }
-	// if (count == 0) {
-	// return false;
-	// }
-	// }
-	// return true;
-	// }
-
-	// @SuppressWarnings("rawtypes")
-	// private Annotation getFieldAnnotationByType(Field field, Class
-	// annotationType) {
-	// for (Annotation typeAnnotation : field.getAnnotations()) {
-	// if (typeAnnotation.annotationType().equals(annotationType))
-	// return typeAnnotation;
-	// }
-	// throw new NoSuchElementException();
-	// }
+	DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
+	Assert.assertEquals("-90.00", decimalMin.value());
+    }
 }

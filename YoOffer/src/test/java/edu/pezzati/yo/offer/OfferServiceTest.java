@@ -84,7 +84,7 @@ public class OfferServiceTest {
 	Response response = offerService.create(offer);
 	Assert.assertEquals(OK, response.getStatus());
 	Offer actualOffer = (Offer) response.getEntity();
-	offer.setId(actualOffer.getId());
+	offer.set_id(actualOffer.get_id());
 	Assert.assertEquals(offer, actualOffer);
     }
 

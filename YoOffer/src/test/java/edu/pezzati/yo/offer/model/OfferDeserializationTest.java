@@ -12,8 +12,6 @@ import org.junit.rules.ExpectedException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.pezzati.yo.offer.model.Offer;
-
 /**
  * Because Offer will be moved from frontend to backend,
  * OfferDeserializationTest check that Offer will be correctly deserialized when
@@ -64,7 +62,7 @@ public class OfferDeserializationTest {
 
     @Test
     public void deserializeFullyValuedOffer() throws IOException {
-	offer = "{\"id\":\"" + offerId.toString() + "\",\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\""
+	offer = "{\"_id\":\"" + offerId.toString() + "\",\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\""
 		+ ownerId.toString() + "\",\"price\":10.0,\"lat\":10.0,\"lon\":10.0}";
 	Offer expected = new Offer(offerId, "some title", "some desc", ownerId, 10D, 10D, 10D);
 	Offer actual = objectMapper.readValue(offer, Offer.class);

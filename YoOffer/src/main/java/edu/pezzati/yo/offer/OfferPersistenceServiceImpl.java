@@ -37,11 +37,16 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
     public Offer create(Offer offer) {
 	evaluateValidation(validator.validate(offer));
 	EntityTransaction transaction = entityM.getTransaction();
-	transaction.begin();
-	entityM.persist(offer);
-	entityM.refresh(offer);
-	transaction.commit();
-	return offer;
+	try {
+	    transaction.begin();
+	    entityM.persist(offer);
+	    entityM.refresh(offer);
+	    transaction.commit();
+	    return offer;
+	} catch (Exception e) {
+	    transaction.rollback();
+	    throw e;
+	}
     }
 
     @Override
@@ -56,18 +61,23 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 
     @Override
     public Offer update(Offer offer) throws OfferNotFound {
-	if (offer.getId() == null)
+	if (offer.get_id() == null)
 	    throw new IllegalArgumentException("Invalid offer: " + offer.toString());
 	evaluateValidation(validator.validate(offer));
 	EntityTransaction transaction = entityM.getTransaction();
-	transaction.begin();
-	Offer foundOffer = entityM.find(Offer.class, offer.getId());
-	if (foundOffer == null)
-	    throw new OfferNotFound();
-	entityM.merge(offer);
-	entityM.refresh(offer);
-	transaction.commit();
-	return offer;
+	try {
+	    transaction.begin();
+	    Offer foundOffer = entityM.find(Offer.class, offer.get_id());
+	    if (foundOffer == null)
+		throw new OfferNotFound();
+	    entityM.merge(offer);
+	    entityM.refresh(offer);
+	    transaction.commit();
+	    return offer;
+	} catch (Exception e) {
+	    transaction.rollback();
+	    throw e;
+	}
     }
 
     @Override
@@ -76,14 +86,18 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 	    throw new IllegalArgumentException();
 	}
 	EntityTransaction transaction = entityM.getTransaction();
-	transaction.begin();
-	Offer offer = entityM.find(Offer.class, offerId);
-	if (offer == null)
-	    throw new OfferNotFound();
-	entityM.merge(offer);
-	entityM.refresh(offer);
-	transaction.commit();
-	return offer;
+	try {
+	    transaction.begin();
+	    Offer offer = entityM.find(Offer.class, offerId);
+	    if (offer == null)
+		throw new OfferNotFound();
+	    entityM.remove(offer);
+	    transaction.commit();
+	    return offer;
+	} catch (Exception e) {
+	    transaction.rollback();
+	    throw e;
+	}
     }
 
     @Override

@@ -23,14 +23,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
+@JsonPropertyOrder({ "_id", "title", "desc", "ownerId", "price", "lat", "lon" })
 public class Offer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
     @JsonSerialize(using = ObjectIdSerializer.class)
-    private ObjectId id;
+    private ObjectId _id;
 
     @JsonProperty
     @Pattern(regexp = "[\\w\\s]*")
@@ -54,13 +54,13 @@ public class Offer {
     private Double price;
 
     @JsonProperty
-    @Digits(integer = 3, fraction = 2)
+    @Digits(integer = 3, fraction = 8)
     @DecimalMax("180.00")
     @DecimalMin("-180.00")
     private Double lat;
 
     @JsonProperty
-    @Digits(integer = 3, fraction = 2)
+    @Digits(integer = 3, fraction = 8)
     @DecimalMax("90.00")
     @DecimalMin("-90.00")
     private Double lon;
@@ -69,8 +69,8 @@ public class Offer {
 	// Empty constructor to be an entity.
     }
 
-    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
-	this.id = id;
+    public Offer(ObjectId _id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
+	this._id = _id;
 	this.title = title;
 	this.desc = desc;
 	/**
@@ -84,12 +84,12 @@ public class Offer {
 	this.lon = lon;
     }
 
-    public ObjectId getId() {
-	return id;
+    public ObjectId get_id() {
+	return _id;
     }
 
-    public void setId(ObjectId id) {
-	this.id = id;
+    public void set_id(ObjectId _id) {
+	this._id = _id;
     }
 
     public String getTitle() {
@@ -142,7 +142,7 @@ public class Offer {
 
     @Override
     public int hashCode() {
-	return Objects.hash(id, title, desc, ownerId, price, lat, lon);
+	return Objects.hash(_id, title, desc, ownerId, price, lat, lon);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class Offer {
 	    return false;
 	}
 	final Offer offer = (Offer) obj;
-	boolean result = Objects.equals(this.id, offer.id);
+	boolean result = Objects.equals(this._id, offer._id);
 	result = result && Objects.equals(this.title, offer.title);
 	result = result && Objects.equals(this.desc, offer.desc);
 	result = result && Objects.equals(this.ownerId, offer.ownerId);
