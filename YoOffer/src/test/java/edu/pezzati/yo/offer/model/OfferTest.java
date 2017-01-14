@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -33,8 +36,10 @@ public class OfferTest {
     private String desc;
     private ObjectId ownerId;
     private Double price;
+    private Integer amount;
     private Double lat;
     private Double lon;
+    private Offer expected;
 
     @Before
     public void init() {
@@ -43,98 +48,95 @@ public class OfferTest {
 	desc = "desc";
 	ownerId = new ObjectId();
 	price = 10D;
+	amount = 1;
 	lat = 10D;
 	lon = 10D;
+	expected = new Offer(offerId, title, desc, ownerId, price, amount, lat, lon);
     }
 
     @Test
     public void equalsHashCode() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, amount, lat, lon);
 	Assert.assertEquals(expected.hashCode(), actual.hashCode());
     }
 
     @Test
     public void notEqualsHashCode() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	double anotherLon = 20D;
-	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, anotherLon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, amount, lat, anotherLon);
 	Assert.assertNotEquals(expected.hashCode(), actual.hashCode());
     }
 
     @Test
     public void equalsOffer() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, amount, lat, lon);
 	Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void equalsNull() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	Offer actual = null;
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
+    public void offersAreEqualsDespiteAmount() {
+	Integer differentAmount = 10;
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, differentAmount, lat, lon);
+	Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void notEqualsById() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	ObjectId differentId = new ObjectId();
-	Offer actual = new Offer(differentId, title, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(differentId, title, desc, ownerId, price, amount, lat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByTitle() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	String differentTitle = "different title";
-	Offer actual = new Offer(offerId, differentTitle, desc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, differentTitle, desc, ownerId, price, amount, lat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByDesc() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	String differentDesc = "different desc";
-	Offer actual = new Offer(offerId, title, differentDesc, ownerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, differentDesc, ownerId, price, amount, lat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByOwnerId() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	ObjectId differentOwnerId = new ObjectId();
-	Offer actual = new Offer(offerId, title, desc, differentOwnerId, price, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, differentOwnerId, price, amount, lat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByPrice() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	double differentPrice = 20D;
-	Offer actual = new Offer(offerId, title, desc, ownerId, differentPrice, lat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, differentPrice, amount, lat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByLat() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	double differentLat = 20D;
-	Offer actual = new Offer(offerId, title, desc, ownerId, price, differentLat, lon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, amount, differentLat, lon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void notEqualsByLon() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	double differentLon = 20D;
-	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, differentLon);
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, amount, lat, differentLon);
 	Assert.assertNotEquals(expected, actual);
     }
 
     @Test
     public void offerEqualsObject() {
-	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
 	Object actual = new Object();
 	Assert.assertNotEquals(expected, actual);
     }
@@ -191,6 +193,20 @@ public class OfferTest {
     }
 
     @Test
+    public void offerAmountMustHaveMinMaxAndNotNullAnnotations() throws Exception {
+	String fieldName = "amount";
+	Field field = Offer.class.getDeclaredField(fieldName);
+	Min min = (Min) AnnotationResolver.getFieldAnnotationByType(field, Min.class);
+	Assert.assertEquals(1, min.value());
+
+	Max max = (Max) AnnotationResolver.getFieldAnnotationByType(field, Max.class);
+	Assert.assertEquals(999999999, max.value());
+
+	NotNull notNull = (NotNull) AnnotationResolver.getFieldAnnotationByType(field, NotNull.class);
+	Assert.assertNotNull(notNull);
+    }
+
+    @Test
     public void offerLatMustHaveDigitsAndDecimalMaxAndDecimalMinAnnotations() throws Exception {
 	String fieldName = "lat";
 	Field field = Offer.class.getDeclaredField(fieldName);
@@ -218,5 +234,19 @@ public class OfferTest {
 
 	DecimalMin decimalMin = (DecimalMin) AnnotationResolver.getFieldAnnotationByType(field, DecimalMin.class);
 	Assert.assertEquals("-90.00", decimalMin.value());
+    }
+
+    @Test
+    public void cannotPickOffer() {
+	Integer pickAmount = 10;
+	Offer pick = new Offer(offerId, title, desc, ownerId, price, pickAmount, lat, lon);
+	Assert.assertFalse(pick.canPick(expected));
+    }
+
+    @Test
+    public void canPickOffer() {
+	Integer pickAmount = 1;
+	Offer pick = new Offer(offerId, title, desc, ownerId, price, pickAmount, lat, lon);
+	Assert.assertTrue(pick.canPick(expected));
     }
 }

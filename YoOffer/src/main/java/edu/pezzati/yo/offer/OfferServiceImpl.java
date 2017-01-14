@@ -5,6 +5,7 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 import edu.pezzati.yo.offer.util.HandleServiceException;
@@ -44,5 +45,18 @@ public class OfferServiceImpl implements OfferService {
     public Response delete(ObjectId offerId) throws OfferNotFound {
 	Offer deletedOffer = persistenceService.delete(offerId);
 	return Response.status(200).entity(deletedOffer).build();
+    }
+
+    @Override
+    @HandleServiceException
+    public Response pick(Offer offer) throws OfferNotFound, NotEnoughOfferElements {
+	Offer offerToPick = persistenceService.read(offer.getId());
+	if (offer.canPick(offerToPick)) {
+	    offerToPick.setAmount(offerToPick.getAmount() - offer.getAmount());
+	    persistenceService.update(offerToPick);
+	} else {
+	    throw new NotEnoughOfferElements();
+	}
+	return Response.status(200).entity(offer).build();
     }
 }

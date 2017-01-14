@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
 
+import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 
@@ -38,4 +39,10 @@ public interface OfferService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     Response delete(@PathParam("id") ObjectId offerId) throws OfferNotFound;
+
+    @PUT
+    @Path("/pick")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response pick(Offer offer) throws OfferNotFound, NotEnoughOfferElements;
 }

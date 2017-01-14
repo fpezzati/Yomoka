@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 
 @HandleServiceException
@@ -24,7 +25,7 @@ public class HandleServiceExceptionImpl {
 	log.info(invocationContext.getMethod().getName());
 	try {
 	    return invocationContext.proceed();
-	} catch (IllegalArgumentException iae) {
+	} catch (IllegalArgumentException | NotEnoughOfferElements iae) {
 	    log.error(INVALID_INPUT, iae);
 	    return Response.status(400).entity(iae.getMessage()).build();
 	} catch (OfferNotFound onf) {

@@ -63,8 +63,8 @@ public class OfferDeserializationTest {
     @Test
     public void deserializeFullyValuedOffer() throws IOException {
 	offer = "{\"_id\":\"" + offerId.toString() + "\",\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\""
-		+ ownerId.toString() + "\",\"price\":10.0,\"lat\":10.0,\"lon\":10.0}";
-	Offer expected = new Offer(offerId, "some title", "some desc", ownerId, 10D, 10D, 10D);
+		+ ownerId.toString() + "\",\"price\":10.0,\"amount\":5,\"lat\":10.0,\"lon\":10.0}";
+	Offer expected = new Offer(offerId, "some title", "some desc", ownerId, 10D, 5, 10D, 10D);
 	Offer actual = objectMapper.readValue(offer, Offer.class);
 	Assert.assertEquals(expected, actual);
     }
@@ -72,7 +72,7 @@ public class OfferDeserializationTest {
     @Test
     public void deserializePartiallyValuedOffer() throws IOException {
 	offer = "{\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\"" + ownerId.toString() + "\"}";
-	Offer expected = new Offer(null, "some title", "some desc", ownerId, null, null, null);
+	Offer expected = new Offer(null, "some title", "some desc", ownerId, null, null, null, null);
 	Offer actual = objectMapper.readValue(offer, Offer.class);
 	Assert.assertEquals(expected, actual);
     }

@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -23,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
+@JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "amount", "lat", "lon" })
 public class Offer {
 
     @Id
@@ -54,6 +56,12 @@ public class Offer {
     private Double price;
 
     @JsonProperty
+    @NotNull
+    @Min(1)
+    @Max(999999999)
+    private Integer amount;
+
+    @JsonProperty
     @Digits(integer = 3, fraction = 8)
     @DecimalMax("180.00")
     @DecimalMin("-180.00")
@@ -69,7 +77,8 @@ public class Offer {
 	// Empty constructor to be an entity.
     }
 
-    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
+    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Integer amount, Double lat,
+	    Double lon) {
 	this.id = id;
 	this.title = title;
 	this.desc = desc;
@@ -80,6 +89,7 @@ public class Offer {
 	 */
 	this.ownerId = ownerId;
 	this.price = price;
+	this.amount = amount;
 	this.lat = lat;
 	this.lon = lon;
     }
@@ -122,6 +132,14 @@ public class Offer {
 
     public void setPrice(Double price) {
 	this.price = price;
+    }
+
+    public Integer getAmount() {
+	return amount;
+    }
+
+    public void setAmount(Integer amount) {
+	this.amount = amount;
     }
 
     public Double getLat() {
@@ -169,5 +187,9 @@ public class Offer {
 	if (!Objects.equals(this.lon, offer.lon))
 	    return false;
 	return true;
+    }
+
+    public boolean canPick(Offer expected) {
+	return this.amount.compareTo(expected.amount) < 1;
     }
 }

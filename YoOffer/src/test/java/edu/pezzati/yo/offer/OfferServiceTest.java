@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 import edu.pezzati.yo.offer.util.AnnotationResolver;
@@ -60,7 +61,7 @@ public class OfferServiceTest {
 
     @Test
     public void createInvalidOffer() {
-	offer = new Offer(null, null, null, null, null, 200D, 90D);
+	offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
 	String expectedMessage = Offer.class.getName() + " is not valid: " + offer.toString();
 	Mockito.when(persistenceService.create(offer)).thenThrow(new IllegalArgumentException(expectedMessage));
 	Response response = offerService.create(offer);
@@ -76,10 +77,11 @@ public class OfferServiceTest {
 	String desc = "desc";
 	ObjectId ownerId = new ObjectId();
 	double price = 1D;
+	int amount = 5;
 	double lat = 2D;
 	double lon = 3D;
-	offer = new Offer(null, title, desc, ownerId, price, lat, lon);
-	Offer offerToReturn = new Offer(new ObjectId(), title, desc, ownerId, price, lat, lon);
+	offer = new Offer(null, title, desc, ownerId, price, amount, lat, lon);
+	Offer offerToReturn = new Offer(new ObjectId(), title, desc, ownerId, price, amount, lat, lon);
 	Mockito.when(persistenceService.create(offer)).thenReturn(offerToReturn);
 	Response response = offerService.create(offer);
 	Assert.assertEquals(OK, response.getStatus());
@@ -121,7 +123,7 @@ public class OfferServiceTest {
     public void readOfferByExistingId() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
 	ObjectId ownerId = new ObjectId();
-	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 2D, 3D);
+	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 	Mockito.when(persistenceService.read(offerId)).thenReturn(offer);
 	Response response = offerService.read(offerId);
 	Mockito.verify(persistenceService, Mockito.times(1)).read(offerId);
@@ -142,7 +144,7 @@ public class OfferServiceTest {
     @Test
     public void updateOfferByNullValue() throws OfferNotFound {
 	ObjectId ownerId = new ObjectId();
-	offer = new Offer(null, "title", "desc", ownerId, 1D, 2D, 3D);
+	offer = new Offer(null, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 	String expectedMessage = "Invalid offer: " + offer.toString();
 	Mockito.when(persistenceService.update(offer)).thenThrow(new IllegalArgumentException(expectedMessage));
 	Response response = offerService.update(offer);
@@ -155,7 +157,7 @@ public class OfferServiceTest {
     public void updateOfferByNonExistingOne() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
 	ObjectId ownerId = new ObjectId();
-	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 2D, 3D);
+	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 	Mockito.when(persistenceService.update(offer)).thenThrow(new OfferNotFound());
 	Response response = offerService.update(offer);
 	Assert.assertEquals(NOT_FOUND, response.getStatus());
@@ -164,7 +166,7 @@ public class OfferServiceTest {
     @Test
     public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
-	offer = new Offer(offerId, "title", "desc", null, 1D, 2D, 3D);
+	offer = new Offer(offerId, "title", "desc", null, 1D, 5, 2D, 3D);
 	Mockito.when(persistenceService.update(offer)).thenThrow(new IllegalArgumentException());
 	Response response = offerService.update(offer);
 	Assert.assertEquals(INVALID_INPUT, response.getStatus());
@@ -174,7 +176,7 @@ public class OfferServiceTest {
     public void updateOfferByExistingAndValidOne() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
 	ObjectId ownerId = new ObjectId();
-	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 2D, 3D);
+	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 	Mockito.when(persistenceService.update(offer)).thenReturn(offer);
 	Response response = offerService.update(offer);
 	Assert.assertEquals(OK, response.getStatus());
@@ -200,12 +202,46 @@ public class OfferServiceTest {
     public void deleteOfferByExistingId() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
 	ObjectId ownerId = new ObjectId();
-	Offer expectedOffer = new Offer(offerId, "title", "desc", ownerId, 1D, 2D, 3D);
+	Offer expectedOffer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 	Mockito.when(persistenceService.delete(offerId)).thenReturn(expectedOffer);
 	Response response = offerService.delete(offerId);
 	Offer actualOffer = (Offer) response.getEntity();
 	Assert.assertEquals(OK, response.getStatus());
 	Assert.assertEquals(expectedOffer, actualOffer);
+    }
+
+    @Test
+    public void pickItemsAboutNonExistingOffer() throws OfferNotFound, NotEnoughOfferElements {
+	offer = Mockito.mock(Offer.class);
+	Mockito.when(offer.getId()).thenReturn(new ObjectId());
+	Mockito.when(persistenceService.read(offer.getId())).thenThrow(new OfferNotFound());
+	Response response = offerService.pick(offer);
+	Assert.assertEquals(NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void pickTooMuchItems() throws OfferNotFound, NotEnoughOfferElements {
+	offer = Mockito.mock(Offer.class);
+	offerService = Mockito.spy(offerService);
+	Offer offerToPick = new Offer();
+	Mockito.when(persistenceService.read(offer.getId())).thenReturn(offerToPick);
+	Mockito.when(offer.canPick(offerToPick)).thenReturn(false);
+	Response response = offerService.pick(offer);
+	Assert.assertEquals(INVALID_INPUT, response.getStatus());
+    }
+
+    @Test
+    public void pickEnoughItems() throws OfferNotFound, NotEnoughOfferElements {
+	offerService = Mockito.spy(offerService);
+	offer = Mockito.mock(Offer.class);
+	Offer offerToPick = Mockito.mock(Offer.class);
+	Mockito.when(persistenceService.read(offer.getId())).thenReturn(offerToPick);
+	Mockito.when(offer.canPick(offerToPick)).thenReturn(true);
+	Mockito.when(offer.getAmount()).thenReturn(10);
+	Mockito.when(offerToPick.getAmount()).thenReturn(20);
+	Response response = offerService.pick(offer);
+	Offer actualOffer = (Offer) response.getEntity();
+	Assert.assertEquals(OK, response.getStatus());
     }
 
     @Test
@@ -248,6 +284,17 @@ public class OfferServiceTest {
 	Assert.assertNotNull(delete);
 	Path path = (Path) AnnotationResolver.getMethodAnnotationByAnnotationType(method, Path.class);
 	String expectedPath = "/{id}";
+	String actualPath = path.value();
+	Assert.assertEquals(expectedPath, actualPath);
+    }
+
+    @Test
+    public void isOfferServicePickMethodCorrectlyAnnotated() throws Exception {
+	Method method = OfferService.class.getMethod("pick", Offer.class);
+	PUT put = (PUT) AnnotationResolver.getMethodAnnotationByAnnotationType(method, PUT.class);
+	Assert.assertNotNull(put);
+	Path path = (Path) AnnotationResolver.getMethodAnnotationByAnnotationType(method, Path.class);
+	String expectedPath = "/pick";
 	String actualPath = path.value();
 	Assert.assertEquals(expectedPath, actualPath);
     }

@@ -46,7 +46,7 @@ public class PersistenceServiceTest {
 
     @Before
     public void init() throws Exception {
-	offer = new Offer(null, "title", "description", new ObjectId(), 1D, 2D, 3D);
+	offer = new Offer(null, "title", "description", new ObjectId(), 1D, 5, 2D, 3D);
 	objectMapper = new ObjectMapper();
 	offerToTest = objectMapper.readValue(offerSetFile, new TypeReference<List<Offer>>() {
 	});
@@ -83,6 +83,14 @@ public class PersistenceServiceTest {
     public void createOfferWithInvalidPrice() {
 	double price = 1000000D;
 	offer.setPrice(price);
+	expectedException.expect(IllegalArgumentException.class);
+	persistenceService.create(offer);
+    }
+
+    @Test
+    public void createOfferWithInvalidAmount() {
+	Integer amount = -3;
+	offer.setAmount(amount);
 	expectedException.expect(IllegalArgumentException.class);
 	persistenceService.create(offer);
     }

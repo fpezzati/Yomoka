@@ -48,17 +48,17 @@ public class OfferSerializationTest {
     @Test
     public void serializeFullyValuedOffer() throws JsonProcessingException {
 	ObjectId offerId = new ObjectId();
-	offer = new Offer(offerId, "some title", "some desc", ownerId, 10D, 10D, 10D);
+	offer = new Offer(offerId, "some title", "some desc", ownerId, 10D, 5, 10D, 10D);
 	String expected = "{\"_id\":\"" + offerId.toString()
 		+ "\",\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\"" + ownerId.toString()
-		+ "\",\"price\":10.0,\"lat\":10.0,\"lon\":10.0}";
+		+ "\",\"price\":10.0,\"amount\":5,\"lat\":10.0,\"lon\":10.0}";
 	String actual = objectMapper.writeValueAsString(offer);
 	Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void serializePartiallyValuedOffer() throws JsonProcessingException {
-	offer = new Offer(null, "some title", "some desc", ownerId, null, null, null);
+	offer = new Offer(null, "some title", "some desc", ownerId, null, null, null, null);
 	String expected = "{\"title\":\"some title\",\"desc\":\"some desc\",\"ownerId\":\"" + ownerId.toString()
 		+ "\"}";
 	String actual = objectMapper.writeValueAsString(offer);
