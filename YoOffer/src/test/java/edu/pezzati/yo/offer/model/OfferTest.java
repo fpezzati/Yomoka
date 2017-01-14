@@ -77,10 +77,58 @@ public class OfferTest {
     }
 
     @Test
-    public void notEquals() {
-	String anotherTitle = "another title";
+    public void notEqualsById() {
 	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
-	Offer actual = new Offer(offerId, anotherTitle, desc, ownerId, price, lat, lon);
+	ObjectId differentId = new ObjectId();
+	Offer actual = new Offer(differentId, title, desc, ownerId, price, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByTitle() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	String differentTitle = "different title";
+	Offer actual = new Offer(offerId, differentTitle, desc, ownerId, price, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByDesc() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	String differentDesc = "different desc";
+	Offer actual = new Offer(offerId, title, differentDesc, ownerId, price, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByOwnerId() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	ObjectId differentOwnerId = new ObjectId();
+	Offer actual = new Offer(offerId, title, desc, differentOwnerId, price, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByPrice() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	double differentPrice = 20D;
+	Offer actual = new Offer(offerId, title, desc, ownerId, differentPrice, lat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByLat() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	double differentLat = 20D;
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, differentLat, lon);
+	Assert.assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void notEqualsByLon() {
+	Offer expected = new Offer(offerId, title, desc, ownerId, price, lat, lon);
+	double differentLon = 20D;
+	Offer actual = new Offer(offerId, title, desc, ownerId, price, lat, differentLon);
 	Assert.assertNotEquals(expected, actual);
     }
 
@@ -98,7 +146,7 @@ public class OfferTest {
 
     @Test
     public void offerIdMustHaveIdAndGeneratedValueAnnotations() throws Exception {
-	String fieldName = "_id";
+	String fieldName = "id";
 	Field field = Offer.class.getDeclaredField(fieldName);
 	Assert.assertTrue(AnnotationResolver.givenFieldIsAnnotated(field, Id.class, GeneratedValue.class));
     }

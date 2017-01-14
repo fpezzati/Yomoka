@@ -14,6 +14,4 @@ public interface OfferPersistenceService {
     public Offer update(Offer offer) throws OfferNotFound;
 
     public Offer delete(ObjectId offerId) throws OfferNotFound;
-
-    public void dispose();
 }

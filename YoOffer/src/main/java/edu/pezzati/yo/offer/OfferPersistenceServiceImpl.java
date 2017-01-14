@@ -61,13 +61,13 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 
     @Override
     public Offer update(Offer offer) throws OfferNotFound {
-	if (offer.get_id() == null)
+	if (offer.getId() == null)
 	    throw new IllegalArgumentException("Invalid offer: " + offer.toString());
 	evaluateValidation(validator.validate(offer));
 	EntityTransaction transaction = entityM.getTransaction();
 	try {
 	    transaction.begin();
-	    Offer foundOffer = entityM.find(Offer.class, offer.get_id());
+	    Offer foundOffer = entityM.find(Offer.class, offer.getId());
 	    if (foundOffer == null)
 		throw new OfferNotFound();
 	    entityM.merge(offer);
@@ -98,11 +98,6 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 	    transaction.rollback();
 	    throw e;
 	}
-    }
-
-    @Override
-    public void dispose() {
-	entityM.close();
     }
 
     private void evaluateValidation(Set<ConstraintViolation<Offer>> validationResult) {

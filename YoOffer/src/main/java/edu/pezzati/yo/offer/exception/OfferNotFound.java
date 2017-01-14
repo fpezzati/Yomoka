@@ -7,8 +7,4 @@ public class OfferNotFound extends Exception {
     public OfferNotFound() {
 	super();
     }
-
-    public OfferNotFound(String message) {
-	super(message);
-    }
 }

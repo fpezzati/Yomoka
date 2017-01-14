@@ -23,14 +23,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ "_id", "title", "desc", "ownerId", "price", "lat", "lon" })
+@JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "lat", "lon" })
 public class Offer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
+    @JsonProperty("_id")
     @JsonSerialize(using = ObjectIdSerializer.class)
-    private ObjectId _id;
+    private ObjectId id;
 
     @JsonProperty
     @Pattern(regexp = "[\\w\\s]*")
@@ -69,8 +69,8 @@ public class Offer {
 	// Empty constructor to be an entity.
     }
 
-    public Offer(ObjectId _id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
-	this._id = _id;
+    public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Double lat, Double lon) {
+	this.id = id;
 	this.title = title;
 	this.desc = desc;
 	/**
@@ -84,12 +84,12 @@ public class Offer {
 	this.lon = lon;
     }
 
-    public ObjectId get_id() {
-	return _id;
+    public ObjectId getId() {
+	return id;
     }
 
-    public void set_id(ObjectId _id) {
-	this._id = _id;
+    public void setId(ObjectId id) {
+	this.id = id;
     }
 
     public String getTitle() {
@@ -142,7 +142,7 @@ public class Offer {
 
     @Override
     public int hashCode() {
-	return Objects.hash(_id, title, desc, ownerId, price, lat, lon);
+	return Objects.hash(id, title, desc, ownerId, price, lat, lon);
     }
 
     @Override
@@ -154,13 +154,20 @@ public class Offer {
 	    return false;
 	}
 	final Offer offer = (Offer) obj;
-	boolean result = Objects.equals(this._id, offer._id);
-	result = result && Objects.equals(this.title, offer.title);
-	result = result && Objects.equals(this.desc, offer.desc);
-	result = result && Objects.equals(this.ownerId, offer.ownerId);
-	result = result && Objects.equals(this.price, offer.price);
-	result = result && Objects.equals(this.lat, offer.lat);
-	result = result && Objects.equals(this.lon, offer.lon);
-	return result;
+	if (!Objects.equals(this.id, offer.id))
+	    return false;
+	if (!Objects.equals(this.title, offer.title))
+	    return false;
+	if (!Objects.equals(this.desc, offer.desc))
+	    return false;
+	if (!Objects.equals(this.ownerId, offer.ownerId))
+	    return false;
+	if (!Objects.equals(this.price, offer.price))
+	    return false;
+	if (!Objects.equals(this.lat, offer.lat))
+	    return false;
+	if (!Objects.equals(this.lon, offer.lon))
+	    return false;
+	return true;
     }
 }

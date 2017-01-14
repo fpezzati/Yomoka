@@ -52,7 +52,7 @@ public class PersistenceServiceTest {
 	});
 	for (Offer offerTest : offerToTest) {
 	    Offer createdOffer = persistenceService.create(offerTest);
-	    offerTest.set_id(createdOffer.get_id());
+	    offerTest.setId(createdOffer.getId());
 	}
     }
 
@@ -104,9 +104,16 @@ public class PersistenceServiceTest {
     }
 
     @Test
+    public void createValidButAlreadyIdProvidedOffer() {
+	offer.setId(new ObjectId());
+	expectedException.expect(Exception.class);
+	persistenceService.create(offer);
+    }
+
+    @Test
     public void createValidOffer() {
 	Offer actualOffer = persistenceService.create(offer);
-	Assert.assertTrue(actualOffer.get_id() != null);
+	Assert.assertTrue(actualOffer.getId() != null);
     }
 
     @Test
@@ -127,7 +134,7 @@ public class PersistenceServiceTest {
     @Test
     public void readOfferByExistingId() throws OfferNotFound {
 	Offer expectedOffer = offerToTest.get(0);
-	Offer actualOffer = persistenceService.read(expectedOffer.get_id());
+	Offer actualOffer = persistenceService.read(expectedOffer.getId());
 	Assert.assertEquals(expectedOffer, actualOffer);
     }
 
@@ -139,7 +146,7 @@ public class PersistenceServiceTest {
 
     @Test
     public void updateOfferByNonExistingOne() throws OfferNotFound {
-	offer.set_id(new ObjectId());
+	offer.setId(new ObjectId());
 	expectedException.expect(OfferNotFound.class);
 	persistenceService.update(offer);
     }
@@ -172,12 +179,12 @@ public class PersistenceServiceTest {
     public void deleteOfferByNonExistingId() throws OfferNotFound {
 	ObjectId offerId = new ObjectId();
 	expectedException.expect(OfferNotFound.class);
-	persistenceService.read(offerId);
+	persistenceService.delete(offerId);
     }
 
     @Test
     public void deleteOfferByExistingId() throws OfferNotFound {
-	ObjectId offerId = offerToTest.get(0).get_id();
+	ObjectId offerId = offerToTest.get(0).getId();
 	persistenceService.delete(offerId);
 	expectedException.expect(OfferNotFound.class);
 	persistenceService.read(offerId);
