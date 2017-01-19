@@ -7,6 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>YoOffer</artifactId>
+	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
@@ -43,4 +44,8 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<finalName>YoOffer</finalName>
+	</build>
 </project>

@@ -18,6 +18,8 @@
 		<hibernate.validator>5.3.4.Final</hibernate.validator>
 		<jackson>2.8.5</jackson>
 		<resteasy>3.1.0.Final</resteasy>
+		<wildfly.swarm>2017.1.1</wildfly.swarm>
+		<docker.plugin>0.19.0</docker.plugin>
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
 		<jacoco.report>${project.build.directory}/reports</jacoco.report>
 		<sonar.server>http://192.168.99.100:9000</sonar.server>
@@ -84,6 +86,7 @@
 			<version>2.4.1.Final</version>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -107,7 +110,44 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>${docker.plugin}</version>
+					<configuration>
+						<images>
+							<image>
+								<alias>YoOffer</alias>
+								<external>
+									<type>compose</type>
+									<basedir>/src/test/resources/DOCKER/docker-compose.yml</basedir>
+								</external>
+							</image>
+						</images>
+					</configuration>
+					<executions>
+					<execution>
+						<id>create-container</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>destroy-container</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
