@@ -14,9 +14,7 @@ import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -24,13 +22,11 @@ import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 import edu.pezzati.yo.offer.util.AnnotationResolver;
-import edu.pezzati.yo.offer.util.WeldRunner;
 
-@RunWith(WeldRunner.class)
-public class OfferServiceTest {
+public class OfferServiceIT {
 
 	private Offer offer;
-	@Mock
+	@PersistenceUnit(name = "")
 	private OfferPersistenceServiceImpl persistenceService;
 	@Inject
 	@InjectMocks
@@ -292,4 +288,5 @@ public class OfferServiceTest {
 		String actualPath = path.value();
 		Assert.assertEquals(expectedPath, actualPath);
 	}
+
 }
