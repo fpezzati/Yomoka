@@ -1,9 +1,9 @@
 package edu.pezzati.yo.offer;
 
-import javax.ws.rs.Path;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@Path("/yo")
+@ApplicationPath("/yo")
 public class YoOfferApp extends Application {
 
 }
