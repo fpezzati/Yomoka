@@ -1,0 +1,1 @@
+Dependencies: org.hibernate.ogm services, org.hibernate.ogm.mongodb:main services
