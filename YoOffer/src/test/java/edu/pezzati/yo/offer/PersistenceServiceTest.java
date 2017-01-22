@@ -30,7 +30,7 @@ public class PersistenceServiceTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Inject
-    @PersistenceUnit(name = "yotest")
+    @PersistenceUnit(name = "yodb")
     private OfferPersistenceService persistenceService;
     private Offer offer;
     private List<Offer> offerToTest;

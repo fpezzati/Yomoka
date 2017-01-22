@@ -3,6 +3,7 @@ package edu.pezzati.yo.offer.util;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -27,13 +28,13 @@ public class HandleServiceExceptionImpl {
 	    return invocationContext.proceed();
 	} catch (IllegalArgumentException | NotEnoughOfferElements iae) {
 	    log.error(INVALID_INPUT, iae);
-	    return Response.status(400).entity(iae.getMessage()).build();
+	    return Response.status(400).entity(iae.getMessage()).type(MediaType.TEXT_HTML).build();
 	} catch (OfferNotFound onf) {
 	    log.error(OFFER_NOT_FOUND, onf);
-	    return Response.status(404).entity(onf.getMessage()).build();
+	    return Response.status(404).entity(onf.getMessage()).type(MediaType.TEXT_HTML).build();
 	} catch (Exception e) {
 	    log.error(UNEXPECTED_ERROR, e);
-	    return Response.status(500).entity(e.getMessage()).build();
+	    return Response.status(500).entity(e.getMessage()).type(MediaType.TEXT_HTML).build();
 	}
     }
 }

@@ -7,17 +7,17 @@ import org.junit.runners.model.InitializationError;
 
 public class WeldRunner extends BlockJUnit4ClassRunner {
 
-    private WeldContainer weldContainer;
+	private WeldContainer weldContainer;
 
-    public WeldRunner(Class<?> klass) throws InitializationError {
-	super(klass);
-	Weld weld = new Weld();
-	weldContainer = weld.initialize();
-    }
+	public WeldRunner(Class<?> klass) throws InitializationError {
+		super(klass);
+		Weld weld = new Weld();
+		weldContainer = weld.initialize();
+	}
 
-    @Override
-    protected Object createTest() throws Exception {
-	final Class<?> test = getTestClass().getJavaClass();
-	return weldContainer.instance().select(test).get();
-    }
+	@Override
+	protected Object createTest() throws Exception {
+		final Class<?> test = getTestClass().getJavaClass();
+		return weldContainer.instance().select(test).get();
+	}
 }

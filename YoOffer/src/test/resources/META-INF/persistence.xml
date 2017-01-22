@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
 	http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
 	version="2.1">
-	<persistence-unit name="yotest" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="yodb" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
 		<class>edu.pezzati.yo.offer.model.Offer</class>
 		<properties>
