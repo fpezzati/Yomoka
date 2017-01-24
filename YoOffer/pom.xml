@@ -29,12 +29,10 @@
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.ogm</groupId>
 			<artifactId>hibernate-ogm-mongodb</artifactId>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
@@ -59,6 +57,39 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker.plugin}</version>
+				<configuration>
+					<images>
+						<image>
+							<alias>YoOffer</alias>
+							<external>
+								<type>compose</type>
+								<basedir>/src/test/resources/DOCKER</basedir>
+								<composeFile>docker-compose.yml</composeFile>
+							</external>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-container</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>destroy-container</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

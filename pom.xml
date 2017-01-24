@@ -58,19 +58,16 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.validator}</version>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator-annotation-processor</artifactId>
 			<version>${hibernate.validator}</version>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator-cdi</artifactId>
 			<version>${hibernate.validator}</version>
-<!-- 			<scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>javax.el</groupId>
@@ -115,42 +112,6 @@
 	</dependencyManagement>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>io.fabric8</groupId>
-					<artifactId>docker-maven-plugin</artifactId>
-					<version>${docker.plugin}</version>
-					<configuration>
-						<images>
-							<image>
-								<alias>YoOffer</alias>
-								<external>
-									<type>compose</type>
-									<basedir>/src/test/resources/DOCKER/docker-compose.yml</basedir>
-								</external>
-							</image>
-						</images>
-					</configuration>
-					<executions>
-					<execution>
-						<id>create-container</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>destroy-container</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
