@@ -3,13 +3,15 @@ version: "2"
 services:
   wildfly:
     image: jboss/wildfly
+    build:
+      context: .
+    command: "echo 'artifact to deploy: $ARTIFACT'"
     ports:
       - "8080:8080"
-    environment:
-      - app=${APP}
+#    environment:
+#      - app=${APP}
     networks:
       - wfymonet
-
   db:
     image: mongo
     ports:
