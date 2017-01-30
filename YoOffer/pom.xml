@@ -58,6 +58,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
@@ -65,13 +66,21 @@
 				<configuration>
 					<images>
 						<image>
-							<alias>YoOffer</alias>
-							<external>
-								<type>compose</type>
-								<basedir>/src/test/resources/DOCKER</basedir>
-								<composeFile>docker-compose.yml</composeFile>
-							</external>
+							<alias>yowildfly</alias>
+							<name>jboss/wildfly</name>
+							<build>
+							</build>
+							<links>
+								<link>yomongo</link>
+							</links>
 						</image>
+						<image>
+							<alias>yomongo</alias>
+							<name>mongo</name>
+						</image>
+						<network>
+							<mode>bridge</mode>
+						</network>
 					</images>
 				</configuration>
 				<executions>
@@ -79,6 +88,7 @@
 						<id>create-container</id>
 						<phase>pre-integration-test</phase>
 						<goals>
+							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
@@ -87,10 +97,12 @@
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>stop</goal>
+							<goal>remove</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+		-->
 		</plugins>
 	</build>
 </project>
