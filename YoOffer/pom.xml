@@ -58,7 +58,6 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
@@ -69,6 +68,12 @@
 							<alias>yowildfly</alias>
 							<name>jboss/wildfly</name>
 							<build>
+								<args>
+									<webapp>${project.basedir}/target/${project.build.finalName}.${project.packaging}</webapp>
+								</args>
+								<dockerFileDir>${project.basedir}/src/test/resources/DOCKER/wildfly</dockerFileDir>
+								<assembly>
+								</assembly>
 							</build>
 							<links>
 								<link>yomongo</link>
@@ -102,7 +107,6 @@
 					</execution>
 				</executions>
 			</plugin>
-		-->
 		</plugins>
 	</build>
 </project>
