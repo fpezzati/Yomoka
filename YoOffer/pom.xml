@@ -68,16 +68,13 @@
 							<alias>yowildfly</alias>
 							<name>jboss/wildfly</name>
 							<build>
+								<!-- -->
 								<args>
 									<webapp>${project.basedir}/target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}/src/test/resources/DOCKER/wildfly</dockerFileDir>
-								<assembly>
-								</assembly>
+							<!-- -->
 							</build>
-							<links>
-								<link>yomongo</link>
-							</links>
 						</image>
 						<image>
 							<alias>yomongo</alias>
