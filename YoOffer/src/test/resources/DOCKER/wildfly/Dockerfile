@@ -1,6 +1,4 @@
 FROM jboss/wildfly
-#ARG webapp
-#ADD $webapp $JBOSS_HOME/standalone/deployments
-RUN echo $webapp
-RUN cp $webapp $JBOSS_HOME/standalone/deployments
+ARG webapp
+COPY $webpp /opt/jboss/wildfly/standalone/deployments
 EXPOSE 8080

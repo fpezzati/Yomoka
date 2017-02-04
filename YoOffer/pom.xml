@@ -72,17 +72,30 @@
 								<args>
 									<webapp>${project.basedir}/target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
-								<dockerFileDir>${project.basedir}/src/test/resources/DOCKER/wildfly</dockerFileDir>
+								<dockerFileDir>${project.basedir}</dockerFileDir>
+								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>
 							<!-- -->
 							</build>
+							<run>
+								<ports>
+									<port>8080:8080</port>
+								</ports>
+							</run>
 						</image>
 						<image>
 							<alias>yomongo</alias>
 							<name>mongo</name>
+							<run>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
 						</image>
+<!--
 						<network>
 							<mode>bridge</mode>
 						</network>
+-->
 					</images>
 				</configuration>
 				<executions>
