@@ -70,7 +70,7 @@
 							<build>
 								<!-- -->
 								<args>
-									<webapp>${project.basedir}/target/${project.build.finalName}.${project.packaging}</webapp>
+									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
 								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>

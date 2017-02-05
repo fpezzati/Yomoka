@@ -1,2 +1,3 @@
-src/*
+src/main/*
+src/test/java/*
 pom.xml
