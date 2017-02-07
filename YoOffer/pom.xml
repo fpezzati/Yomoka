@@ -52,7 +52,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}.${project.packaging}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -68,8 +68,9 @@
 							<alias>yowildfly</alias>
 							<name>jboss/wildfly</name>
 							<build>
-								<!-- -->
+								<!--
 								<finalName>${project.build.finalName}.${project.packaging}</finalName>
+								 -->
 								<args>
 									<webapp>maven/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
