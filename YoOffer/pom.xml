@@ -52,7 +52,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>YoOffer</finalName>
+		<finalName>${project.artifactId}.${project.packaging}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -69,11 +69,15 @@
 							<name>jboss/wildfly</name>
 							<build>
 								<!-- -->
+								<finalName>${project.build.finalName}.${project.packaging}</finalName>
 								<args>
-									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
+									<webapp>maven/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
 								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>
+								<assembly>
+									<descriptorRef>artifact</descriptorRef>
+								</assembly>
 							<!-- -->
 							</build>
 							<run>
