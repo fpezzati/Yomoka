@@ -69,17 +69,15 @@
 							<name>jboss/wildfly</name>
 							<build>
 								<!--
-								<finalName>${project.build.finalName}.${project.packaging}</finalName>
-								 -->
+								<assembly>
+									<descriptorRef>${project.basedir}/src/test/resources/DOCKER/assembly.xml</descriptorRef>
+								</assembly>
+							-->
 								<args>
-									<webapp>maven/${project.build.finalName}.${project.packaging}</webapp>
+									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
 								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>
-								<assembly>
-									<descriptorRef>artifact</descriptorRef>
-								</assembly>
-							<!-- -->
 							</build>
 							<run>
 								<ports>
@@ -105,7 +103,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>create-container</id>
+						<id>run-images</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>build</goal>
@@ -113,7 +111,7 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>destroy-container</id>
+						<id>destroy-images</id>
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>stop</goal>
