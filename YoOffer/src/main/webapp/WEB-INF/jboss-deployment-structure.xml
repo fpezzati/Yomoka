@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-deployment-structure>
 	<deployment>
+		<dependencies>
+				<module name="org.hibernate.ogm" slot="5.0" services="export" />
+				<module name="org.hibernate.ogm.mongo" slot="5.0" services="export" />
+		</dependencies>
 		<exclude-subsystems>
 			<subsystem name="jpa" />
 		</exclude-subsystems>
