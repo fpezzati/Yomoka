@@ -1,5 +1,5 @@
 FROM jboss/wildfly
-ADD org /opt/jboss/wildfly/modules/system/layers/base/
+COPY org /opt/jboss/wildfly/modules/system/layers/base/org
 COPY standalone.xml /opt/jboss/wildfly/standalone/configuration/standalone.xml
 COPY mgmt-users.properties /opt/jboss/wildfly/standalone/configuration/mgmt-users.properties
 EXPOSE 8080
