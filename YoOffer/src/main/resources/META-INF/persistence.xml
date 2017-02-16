@@ -11,10 +11,7 @@
 			<property name="hibernate.ogm.datastore.provider" value="mongodb" />
 			<property name="hibernate.ogm.datastore.database" value="yodb" />
 			<property name="hibernate.ogm.datastore.create_database" value="true" />
-			<property name="jboss.as.jpa.providerModule" value="application" />
-			<!--
 			<property name="jboss.as.jpa.providerModule" value="org.hibernate:5.0.3.Final" />
-			-->
 		</properties>
 	</persistence-unit>
 </persistence>
