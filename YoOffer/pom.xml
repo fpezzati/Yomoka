@@ -52,7 +52,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>YoOffer</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -65,28 +65,59 @@
 				<configuration>
 					<images>
 						<image>
-							<alias>YoOffer</alias>
-							<external>
-								<type>compose</type>
-								<basedir>/src/test/resources/DOCKER</basedir>
-								<composeFile>docker-compose.yml</composeFile>
-							</external>
+							<alias>yowildfly</alias>
+							<name>jboss/wildfly</name>
+							<build>
+								<!--
+								<assembly>
+									<descriptorRef>${project.basedir}/src/test/resources/DOCKER/assembly.xml</descriptorRef>
+								</assembly>
+							-->
+								<args>
+									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
+								</args>
+								<dockerFileDir>${project.basedir}</dockerFileDir>
+								<!--
+								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>
+							-->
+							</build>
+							<run>
+								<ports>
+									<port>8080:8080</port>
+								</ports>
+							</run>
 						</image>
+						<image>
+							<alias>yomongo</alias>
+							<name>mongo</name>
+							<run>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+<!--
+						<network>
+							<mode>bridge</mode>
+						</network>
+-->
 					</images>
 				</configuration>
 				<executions>
 					<execution>
-						<id>create-container</id>
+						<id>run-images</id>
 						<phase>pre-integration-test</phase>
 						<goals>
+							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>destroy-container</id>
+						<id>destroy-images</id>
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>stop</goal>
+							<goal>remove</goal>
 						</goals>
 					</execution>
 				</executions>

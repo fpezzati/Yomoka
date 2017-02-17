@@ -1,0 +1,4 @@
+src/main/*
+src/test/java/*
+pom.xml
+target/docker/
