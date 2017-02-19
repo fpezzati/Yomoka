@@ -10,7 +10,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.bson.types.ObjectId;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,11 +31,12 @@ public class OfferServiceIT {
     // @Inject
     // @InjectMocks
     // private OfferServiceImpl offerService;
-    // private static final int OK = 200;
+    private static final int OK = 200;
     private static final int INVALID_INPUT = 400;
-
-    // private static final int NOT_FOUND = 404;
-    // private static final int ERROR = 500;
+    private static final int NOT_FOUND = 404;
+    private static final int ERROR = 500;
+    private Client client;
+    private WebTarget webTarget;
 
     @BeforeClass
     public static void setup() {
@@ -41,55 +44,46 @@ public class OfferServiceIT {
 	System.out.println("webContext: " + webContext);
     }
 
-    //
-    // @Before
-    // public void init() {
-    // MockitoAnnotations.initMocks(this);
-    // }
-    //
+    @Before
+    public void init() throws URISyntaxException {
+	client = ClientBuilder.newClient();
+	webTarget = client.target(new URI(webContext));
+    }
+
     @Test
     public void createNullOffer() throws URISyntaxException {
 	System.out.println("createNullOffer test, webContext: " + webContext);
 	offer = null;
-	Client client = ClientBuilder.newClient();
-	WebTarget webTarget = client.target(new URI(webContext));
 	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 	Assert.assertEquals(INVALID_INPUT, response.getStatus());
     }
-    //
+
     // @Test
-    // public void createInvalidOffer() {
-    // offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
-    // String expectedMessage = Offer.class.getName() + " is not valid: " +
-    // offer.toString();
-    // Mockito.when(persistenceService.create(offer)).thenThrow(new
-    // IllegalArgumentException(expectedMessage));
-    // Response response = offerService.create(offer);
-    // Mockito.verify(persistenceService, Mockito.times(1)).create(offer);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // String actualMessage = response.getEntity().toString();
-    // Assert.assertEquals(expectedMessage, actualMessage);
-    // }
-    //
-    // @Test
-    // public void createValidOffer() throws Exception {
-    // String title = "title";
-    // String desc = "desc";
-    // ObjectId ownerId = new ObjectId();
-    // double price = 1D;
-    // int amount = 5;
-    // double lat = 2D;
-    // double lon = 3D;
-    // offer = new Offer(null, title, desc, ownerId, price, amount, lat, lon);
-    // Offer offerToReturn = new Offer(new ObjectId(), title, desc, ownerId,
-    // price, amount, lat, lon);
-    // Mockito.when(persistenceService.create(offer)).thenReturn(offerToReturn);
-    // Response response = offerService.create(offer);
-    // Assert.assertEquals(OK, response.getStatus());
-    // Offer actualOffer = (Offer) response.getEntity();
-    // offer.setId(actualOffer.getId());
-    // Assert.assertEquals(offer, actualOffer);
-    // }
+    public void createInvalidOffer() {
+	offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
+	String expectedMessage = Offer.class.getName() + " is not valid: " + offer.toString();
+	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(INVALID_INPUT, response.getStatus());
+	String actualMessage = response.readEntity(String.class);
+	Assert.assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Test
+    public void createValidOffer() throws Exception {
+	String title = "title";
+	String desc = "desc";
+	ObjectId ownerId = new ObjectId();
+	double price = 1D;
+	int amount = 5;
+	double lat = 2D;
+	double lon = 3D;
+	offer = new Offer(null, title, desc, ownerId, price, amount, lat, lon);
+	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(OK, response.getStatus());
+	Offer actualOffer = response.readEntity(Offer.class);
+	offer.setId(actualOffer.getId());
+	Assert.assertEquals(offer, actualOffer);
+    }
     //
     // @Test
     // public void createOfferError() {
