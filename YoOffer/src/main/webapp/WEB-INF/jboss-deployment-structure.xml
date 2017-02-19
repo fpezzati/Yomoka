@@ -5,8 +5,8 @@
 				<module name="org.hibernate.ogm" slot="5.0" services="export" />
 				<module name="org.hibernate.ogm.mongodb" slot="5.0" services="export" />
 		</dependencies>
-		<exclude-subsystems>
-			<subsystem name="jpa" />
-		</exclude-subsystems>
+<!-- 		<exclude-subsystems> -->
+<!-- 			<subsystem name="jpa" /> -->
+<!-- 		</exclude-subsystems> -->
 	</deployment>
 </jboss-deployment-structure>

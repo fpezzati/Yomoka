@@ -29,10 +29,12 @@
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.ogm</groupId>
 			<artifactId>hibernate-ogm-mongodb</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
@@ -42,6 +44,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
+			<version>${resteasy}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -49,6 +52,19 @@
 			<artifactId>resteasy-servlet-initializer</artifactId>
 			<version>${resteasy}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>${resteasy}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<version>${resteasy}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -57,6 +73,15 @@
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.0.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<webContext>${docker.host.address}</webContext>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>io.fabric8</groupId>
@@ -68,18 +93,10 @@
 							<alias>yowildfly</alias>
 							<name>jboss/wildfly</name>
 							<build>
-								<!--
-								<assembly>
-									<descriptorRef>${project.basedir}/src/test/resources/DOCKER/assembly.xml</descriptorRef>
-								</assembly>
-							-->
 								<args>
 									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
-								<!--
-								<dockerFile>src/test/resources/DOCKER/wildfly/Dockerfile</dockerFile>
-							-->
 							</build>
 							<run>
 								<ports>
@@ -96,11 +113,7 @@
 								</ports>
 							</run>
 						</image>
-<!--
-						<network>
-							<mode>bridge</mode>
-						</network>
--->
+						<!-- <network> <mode>bridge</mode> </network> -->
 					</images>
 				</configuration>
 				<executions>

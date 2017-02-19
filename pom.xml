@@ -13,7 +13,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hibernate.ogm>5.0.3.Final</hibernate.ogm>
+		<hibernate.ogm>5.0.4.Final</hibernate.ogm>
 		<hibernate.jpa>1.0.0.Final</hibernate.jpa>
 		<hibernate.validator>5.3.4.Final</hibernate.validator>
 		<jackson>2.8.5</jackson>
