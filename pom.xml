@@ -133,6 +133,7 @@
 							<goal>prepare-agent</goal>
 						</goals>
 						<configuration>
+							<append>true</append>
 							<destFile>${jacoco.exec}</destFile>
 							<propertyName>surefireArgLine</propertyName>
 						</configuration>
@@ -195,6 +196,8 @@
 				<sonar.jdbc.username>user</sonar.jdbc.username>
 				<sonar.jdbc.password>password</sonar.jdbc.password>
 				<sonar.host.url>${sonar.server}</sonar.host.url>
+				<sonar.junit.reportsPath>${jacoco.report}</sonar.junit.reportsPath>
+				<sonar.jacoco.reportPaths>${jacoco.exec}</sonar.jacoco.reportPaths>
 			</properties>
 		</profile>
 	</profiles>

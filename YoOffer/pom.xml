@@ -90,6 +90,15 @@
 				<configuration>
 					<images>
 						<image>
+							<alias>yomongo</alias>
+							<name>mongo</name>
+							<run>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+						<image>
 							<alias>yowildfly</alias>
 							<name>jboss/wildfly</name>
 							<build>
@@ -99,22 +108,34 @@
 								<dockerFileDir>${project.basedir}</dockerFileDir>
 							</build>
 							<run>
+								<env>
+									<MONGO_HOST>yomongo</MONGO_HOST>
+									<MONGO_PORT>27017</MONGO_PORT>
+								</env>
 								<ports>
 									<port>8080:8080</port>
 								</ports>
+								<wait>
+									<http>
+										<url>http://${docker.host.address}:8080</url>
+									</http>
+									<time>30000</time>
+								</wait>
+								<!--
+								<links>
+									<link>yomongo</link>
+								</links>
+								-->
 							</run>
 						</image>
-						<image>
-							<alias>yomongo</alias>
-							<name>mongo</name>
-							<run>
-								<ports>
-									<port>27017:27017</port>
-								</ports>
-							</run>
-						</image>
-						<!-- <network> <mode>bridge</mode> </network> -->
 					</images>
+					<net>host</net>
+					<!--
+					<network>
+						<name>yonet</name>
+						<mode>bridge</mode>
+					</network>
+				-->
 				</configuration>
 				<executions>
 					<execution>
