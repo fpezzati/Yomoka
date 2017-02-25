@@ -108,9 +108,15 @@
 								<dockerFileDir>${project.basedir}</dockerFileDir>
 							</build>
 							<run>
+								<dependsOn>
+										<container>yomongo</container>
+								</dependsOn>
 								<env>
-									<MONGO_HOST>yomongo</MONGO_HOST>
-									<MONGO_PORT>27017</MONGO_PORT>
+									<JAVA_OPTS>-Dyomongo.host=${yomongo.host} -Dyomongo.port=27017</JAVA_OPTS>
+									<!--
+									<yomongo.host>-Dyomongo.host=${docker.container.yomongo.ip}</yomongo.host>
+									<yomongo.port>-Dyomongo.port=27017</yomongo.port>
+								-->
 								</env>
 								<ports>
 									<port>8080:8080</port>
@@ -130,12 +136,12 @@
 						</image>
 					</images>
 					<net>host</net>
-					<!--
 					<network>
 						<name>yonet</name>
-						<mode>bridge</mode>
+						<mode>custom</mode>
+						<alias>yomongo</alias>
+						<alias>yowildfly</alias>
 					</network>
-				-->
 				</configuration>
 				<executions>
 					<execution>
