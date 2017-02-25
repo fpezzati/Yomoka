@@ -80,6 +80,8 @@
 				<configuration>
 					<systemPropertyVariables>
 						<webContext>${docker.host.address}</webContext>
+						<yomongo.host>${docker.container.yomongo.ip}</yomongo.host>
+						<yomongo.port>27017</yomongo.port>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -111,13 +113,13 @@
 								<dependsOn>
 										<container>yomongo</container>
 								</dependsOn>
+								<!--
 								<env>
 									<JAVA_OPTS>-Dyomongo.host=${yomongo.host} -Dyomongo.port=27017</JAVA_OPTS>
-									<!--
 									<yomongo.host>-Dyomongo.host=${docker.container.yomongo.ip}</yomongo.host>
 									<yomongo.port>-Dyomongo.port=27017</yomongo.port>
-								-->
 								</env>
+								-->
 								<ports>
 									<port>8080:8080</port>
 								</ports>
