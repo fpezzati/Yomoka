@@ -11,8 +11,8 @@
 			<property name="hibernate.ogm.datastore.provider" value="mongodb" />
 			<property name="hibernate.ogm.datastore.database" value="yodb" />
 			<property name="hibernate.ogm.datastore.create_database" value="true" />
-			<property name="hibernate.ogm.mongodb.host" value="${MONGO_HOST}"/>
-			<property name="hibernate.ogm.mongodb.port" value="${MONGO_PORT}"/>
+			<property name="hibernate.ogm.datastore.host" value="${yodbhost}"/>
+			<property name="hibernate.ogm.datastore.port" value="${yodbport}"/>
 		</properties>
 	</persistence-unit>
 </persistence>
