@@ -1,0 +1,4 @@
+#RUN database container
+docker run --name yomongo -p 27017:27017 mongo
+#RUN webapp container
+docker run --name yowfy -p 8080:8080 --link yomongo jboss/wildfly /opt/jboss/wildfly/standalone/bin/standalone.sh -b 0.0.0.0 --debug -Dyodbhost=172.17.0.2 -Dyodbport=27017<
