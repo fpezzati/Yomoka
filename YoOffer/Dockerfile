@@ -1,9 +1,10 @@
 FROM fpezzati/wildflyogm
-ARG yodbhost=localhost
-ARG yodbport=27017
-ENV yodbhost ${yodbhost}
-ENV yodbport ${yodbport}
-ENV yocommand '/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dyodbhost=$yodbhost -Dyodbport=$yodbport'
+#ARG yodbport=27017
+#ENV yodbhost ${yodbhost}
+#ENV yodbport ${yodbport}
+#ENV yodbhost
+#ENV yodbport
+#ENV yocommand '/opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -Dyodbhost=$yodbhost -Dyodbport=$yodbport'
 ARG webapp
 COPY $webapp /opt/jboss/wildfly/standalone/deployments/
 EXPOSE 8080

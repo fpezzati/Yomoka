@@ -110,9 +110,10 @@
 									<!--
     							<yodbhost>${docker.container.yomongo.ip}</yodbhost>
 									<yodbport>${yomongo.port}</yodbport>
-								-->
+
 									<yodbhost>111.111.111.111</yodbhost>
 									<yodbport>11111</yodbport>
+									-->
 									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
