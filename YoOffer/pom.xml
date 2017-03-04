@@ -118,15 +118,15 @@
 									<time>30000</time>
 								</wait>
 								<links>
-									<link>yomongo</link>
+									<link>yomongo:yomongo</link>
 								</links>
-								<!--
-								<cmd> /opt/jboss/wildfly/standalone/bin/standalone.sh -b 0.0.0.0 -Dyodbhost=${docker.container.yomongo.ip} -Dyodbport=${yomongo.port} </cmd>
-								<cmd> /opt/jboss/wildfly/standalone/bin/standalone.sh -b 0.0.0.0 -Dyodbhost=111.111.111.111 -Dyodbport=27017 </cmd>
-							-->
 								<env>
-									<yodbhost>-Dyodbhost=${docker.container.yomongo.ip}</yodbhost>
-									<yodbport>-Dyodbport=${yomongo.port}</yodbport>
+									<!--
+									<yodbhost>${docker.container.yomongo.ip}</yodbhost>
+									<yodbport>${yomongo.port}</yodbport>
+								-->
+								<yodbhost>${docker.container.yomongo.ipAddress}</yodbhost>
+								<yodbport>27017</yodbport>
 							  </env>
 							</run>
 						</image>
