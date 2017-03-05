@@ -113,7 +113,7 @@
 								</ports>
 								<wait>
 									<http>
-										<url>http://${docker.host.address}:8080</url>
+										<url>http://${docker.host.address}:8080/YoOffer</url>
 									</http>
 									<time>30000</time>
 								</wait>
@@ -121,12 +121,8 @@
 									<link>yomongo:yomongo</link>
 								</links>
 								<env>
-									<!--
-									<yodbhost>${docker.container.yomongo.ip}</yodbhost>
-									<yodbport>${yomongo.port}</yodbport>
-								-->
-								<yodbhost>yomongo</yodbhost>
-								<yodbport>27017</yodbport>
+									<yodbhost>yomongo</yodbhost>
+									<yodbport>27017</yodbport>
 							  </env>
 								<dependsOn>
 									<container>yomongo</container>
