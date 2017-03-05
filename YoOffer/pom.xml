@@ -125,9 +125,12 @@
 									<yodbhost>${docker.container.yomongo.ip}</yodbhost>
 									<yodbport>${yomongo.port}</yodbport>
 								-->
-								<yodbhost>${docker.container.yomongo.ipAddress}</yodbhost>
+								<yodbhost>yomongo</yodbhost>
 								<yodbport>27017</yodbport>
 							  </env>
+								<dependsOn>
+									<container>yomongo</container>
+								</dependsOn>
 							</run>
 						</image>
 					</images>
