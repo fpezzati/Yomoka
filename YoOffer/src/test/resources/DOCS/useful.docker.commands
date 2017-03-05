@@ -1,0 +1,12 @@
+#DOCKER USEFUL
+#remove child images of 27e70d979161
+docker rmi $(docker images --filter since=27e70d979161 -q)
+
+#connect ssh to container 3a52fbde83fa
+docker exec -i -t 3a52fbde83fa /bin/bash
+
+#RUN database container
+docker run --name yomongo -p 27017:27017 mongo
+
+#RUN webapp container
+docker run --name yowfy -p 8080:8080 --link yomongo jboss/wildfly /opt/jboss/wildfly/standalone/bin/standalone.sh -b 0.0.0.0 --debug -Dyodbhost=172.17.0.2 -Dyodbport=27017

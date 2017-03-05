@@ -79,10 +79,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
 					<systemPropertyVariables>
-						<!--
-						<yodbhost>${docker.container.yomongo.ip}</yodbhost>
-						<yodbport>${yomongo.port}</yodbport>
-					-->
 						<webContext>${docker.host.address}</webContext>
 					</systemPropertyVariables>
 				</configuration>
@@ -107,12 +103,6 @@
 							<name>jboss/wildfly</name>
 							<build>
 								<args>
-									<!--
-    							<yodbhost>${docker.container.yomongo.ip}</yodbhost>
-									<yodbport>${yomongo.port}</yodbport>
-								-->
-									<yodbhost>111.111.111.111</yodbhost>
-									<yodbport>11111</yodbport>
 									<webapp>target/${project.build.finalName}.${project.packaging}</webapp>
 								</args>
 								<dockerFileDir>${project.basedir}</dockerFileDir>
@@ -128,17 +118,19 @@
 									<time>30000</time>
 								</wait>
 								<links>
-									<link>yomongo</link>
+									<link>yomongo:yomongo</link>
 								</links>
+								<env>
+									<!--
+									<yodbhost>${docker.container.yomongo.ip}</yodbhost>
+									<yodbport>${yomongo.port}</yodbport>
+								-->
+								<yodbhost>${docker.container.yomongo.ipAddress}</yodbhost>
+								<yodbport>27017</yodbport>
+							  </env>
 							</run>
 						</image>
 					</images>
-					<!--
-					<network>
-						<name>yonet</name>
-						<mode>bridge</mode>
-					</network>
-				-->
 				</configuration>
 				<executions>
 					<execution>
