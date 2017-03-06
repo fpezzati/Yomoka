@@ -31,17 +31,16 @@ public class OfferServiceIT {
     // @Inject
     // @InjectMocks
     // private OfferServiceImpl offerService;
-    private static final int OK = 200;
-    private static final int INVALID_INPUT = 400;
-    private static final int NOT_FOUND = 404;
-    private static final int ERROR = 500;
+    public static final int OK = 200;
+    public static final int INVALID_INPUT = 400;
+    public static final int NOT_FOUND = 404;
+    public static final int ERROR = 500;
     private Client client;
     private WebTarget webTarget;
 
     @BeforeClass
     public static void setup() {
 	webContext = PROTOCOL + System.getProperty("webContext") + PORT + YOOFFER;
-	System.out.println("webContext: " + webContext);
     }
 
     @Before
@@ -52,13 +51,12 @@ public class OfferServiceIT {
 
     @Test
     public void createNullOffer() throws URISyntaxException {
-	System.out.println("createNullOffer test, webContext: " + webContext);
 	offer = null;
 	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 	Assert.assertEquals(INVALID_INPUT, response.getStatus());
     }
 
-    // @Test
+    @Test
     public void createInvalidOffer() {
 	offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
 	String expectedMessage = Offer.class.getName() + " is not valid: " + offer.toString();
