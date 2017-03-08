@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,11 +30,6 @@ public class OfferServiceIT {
 	private static final String PICKURL = "/pick";
 	private Offer offer;
 
-	// @PersistenceUnit(name = "yodb")
-	// private OfferPersistenceServiceImpl persistenceService;
-	// @Inject
-	// @InjectMocks
-	// private OfferServiceImpl offerService;
 	public static final int OK = 200;
 	public static final int INVALID_INPUT = 400;
 	public static final int NOT_FOUND = 404;
@@ -41,6 +37,7 @@ public class OfferServiceIT {
 	private Client client;
 	private WebTarget webTarget;
 	private WebTarget pickWebTarget;
+	private Response response;
 
 	@BeforeClass
 	public static void setup() {
@@ -54,17 +51,24 @@ public class OfferServiceIT {
 		pickWebTarget = client.target(new URI(webContext + PICKURL));
 	}
 
+	@After
+	public void cleanup() {
+		if (response != null) {
+			response.close();
+		}
+	}
+
 	@Test
 	public void createNullOffer() throws URISyntaxException {
 		offer = null;
-		Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
 	@Test
 	public void createInvalidOffer() {
 		offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
-		Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
@@ -78,7 +82,7 @@ public class OfferServiceIT {
 		double lat = 2D;
 		double lon = 3D;
 		offer = new Offer(null, title, desc, ownerId, price, amount, lat, lon);
-		Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(OK, response.getStatus());
 		Offer actualOffer = response.readEntity(Offer.class);
 		offer.setId(actualOffer.getId());
@@ -93,30 +97,25 @@ public class OfferServiceIT {
 	}
 
 	@Test
-	public void readOfferByNullValue() throws OfferNotFound {
-		ObjectId offerId = null;
-		Response response = webTarget.queryParam("id", offerId).request().get();
-		Assert.assertEquals(INVALID_INPUT, response.getStatus());
-	}
-
-	@Test
-	public void readOfferByNonExistingId() throws OfferNotFound {
+	public void readOfferByNonExistingId() throws OfferNotFound, URISyntaxException {
 		ObjectId offerId = new ObjectId();
-		Response response = webTarget.queryParam("id", offerId).request().get();
+		webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+		response = webTarget.request(MediaType.APPLICATION_JSON).get();
 		Assert.assertEquals(NOT_FOUND, response.getStatus());
 	}
 
 	@Test
-	public void readOfferByExistingId() throws OfferNotFound {
+	public void readOfferByExistingId() throws OfferNotFound, URISyntaxException {
 		ObjectId offerId = new ObjectId();
-		Response response = webTarget.queryParam("id", offerId).request().get();
+		webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+		response = webTarget.request(MediaType.APPLICATION_JSON).get();
 		Assert.assertEquals(OK, response.getStatus());
 	}
 
 	@Test
 	public void readOfferError() throws OfferNotFound {
 		ObjectId offerId = new ObjectId();
-		Response response = webTarget.queryParam("id", offerId).request().get();
+		response = webTarget.queryParam("id", offerId).request(MediaType.APPLICATION_JSON).get();
 		Assert.assertEquals(ERROR, response.getStatus());
 	}
 
@@ -124,7 +123,7 @@ public class OfferServiceIT {
 	public void updateOfferByNullValue() throws OfferNotFound {
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(null, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-		Response response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
@@ -133,7 +132,7 @@ public class OfferServiceIT {
 		ObjectId offerId = new ObjectId();
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-		Response response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(NOT_FOUND, response.getStatus());
 	}
 
@@ -141,7 +140,7 @@ public class OfferServiceIT {
 	public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
 		ObjectId offerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", null, 1D, 5, 2D, 3D);
-		Response response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
@@ -150,30 +149,25 @@ public class OfferServiceIT {
 		ObjectId offerId = new ObjectId();
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-		Response response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+		response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(OK, response.getStatus());
 	}
 
 	@Test
-	public void deleteOfferByNullValue() throws OfferNotFound {
-		ObjectId offerId = null;
-		Response response = webTarget.queryParam("id", offerId).request().delete();
-		Assert.assertEquals(INVALID_INPUT, response.getStatus());
-	}
-
-	@Test
-	public void deleteOfferByNonExistingId() throws OfferNotFound {
+	public void deleteOfferByNonExistingId() throws OfferNotFound, URISyntaxException {
 		ObjectId offerId = new ObjectId();
-		Response response = webTarget.queryParam("id", offerId).request().delete();
+		webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+		response = webTarget.request(MediaType.APPLICATION_JSON).delete();
 		Assert.assertEquals(NOT_FOUND, response.getStatus());
 	}
 
 	@Test
-	public void deleteOfferByExistingId() throws OfferNotFound {
+	public void deleteOfferByExistingId() throws OfferNotFound, URISyntaxException {
 		ObjectId offerId = new ObjectId();
 		ObjectId ownerId = new ObjectId();
 		Offer expectedOffer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-		Response response = webTarget.queryParam("id", offerId).request().delete();
+		webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+		response = webTarget.request(MediaType.APPLICATION_JSON).delete();
 		Offer actualOffer = (Offer) response.getEntity();
 		Assert.assertEquals(OK, response.getStatus());
 		Assert.assertEquals(expectedOffer, actualOffer);
@@ -181,21 +175,22 @@ public class OfferServiceIT {
 
 	@Test
 	public void pickItemsAboutNonExistingOffer() throws OfferNotFound, NotEnoughOfferElements {
-		Response response = webTarget.queryParam("id", new ObjectId()).request().delete();
+		Offer offerToPick = new Offer();
+		response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(NOT_FOUND, response.getStatus());
 	}
 
 	@Test
 	public void pickTooMuchItems() throws OfferNotFound, NotEnoughOfferElements {
 		Offer offerToPick = new Offer();
-		Response response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
+		response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(INVALID_INPUT, response.getStatus());
 	}
 
 	@Test
 	public void pickEnoughItems() throws OfferNotFound, NotEnoughOfferElements {
 		Offer offerToPick = new Offer();
-		Response response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
+		response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
 		Assert.assertEquals(OK, response.getStatus());
 	}
 }
