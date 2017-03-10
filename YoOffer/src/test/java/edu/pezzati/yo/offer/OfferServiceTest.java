@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import edu.pezzati.yo.offer.exception.InvalidOffer;
 import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
@@ -137,7 +138,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void updateOfferByNullValue() throws OfferNotFound {
+	public void updateOfferByNullValue() throws OfferNotFound, InvalidOffer {
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(null, "title", "desc", ownerId, 1D, 5, 2D, 3D);
 		String expectedMessage = "Invalid offer: " + offer.toString();
@@ -149,7 +150,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void updateOfferByNonExistingOne() throws OfferNotFound {
+	public void updateOfferByNonExistingOne() throws OfferNotFound, InvalidOffer {
 		ObjectId offerId = new ObjectId();
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
@@ -159,7 +160,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
+	public void updateOfferByExistingButInvalidOne() throws OfferNotFound, InvalidOffer {
 		ObjectId offerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", null, 1D, 5, 2D, 3D);
 		Mockito.when(persistenceService.update(offer)).thenThrow(new IllegalArgumentException());
@@ -168,7 +169,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void updateOfferByExistingAndValidOne() throws OfferNotFound {
+	public void updateOfferByExistingAndValidOne() throws OfferNotFound, InvalidOffer {
 		ObjectId offerId = new ObjectId();
 		ObjectId ownerId = new ObjectId();
 		offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
@@ -206,7 +207,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void pickItemsAboutNonExistingOffer() throws OfferNotFound, NotEnoughOfferElements {
+	public void pickItemsAboutNonExistingOffer() throws OfferNotFound, NotEnoughOfferElements, InvalidOffer {
 		offer = Mockito.mock(Offer.class);
 		Mockito.when(offer.getId()).thenReturn(new ObjectId());
 		Mockito.when(persistenceService.read(offer.getId())).thenThrow(new OfferNotFound());
@@ -215,7 +216,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void pickTooMuchItems() throws OfferNotFound, NotEnoughOfferElements {
+	public void pickTooMuchItems() throws OfferNotFound, NotEnoughOfferElements, InvalidOffer {
 		offer = Mockito.mock(Offer.class);
 		offerService = Mockito.spy(offerService);
 		Offer offerToPick = new Offer();
@@ -226,7 +227,7 @@ public class OfferServiceTest {
 	}
 
 	@Test
-	public void pickEnoughItems() throws OfferNotFound, NotEnoughOfferElements {
+	public void pickEnoughItems() throws OfferNotFound, NotEnoughOfferElements, InvalidOffer {
 		offerService = Mockito.spy(offerService);
 		offer = Mockito.mock(Offer.class);
 		Offer offerToPick = Mockito.mock(Offer.class);

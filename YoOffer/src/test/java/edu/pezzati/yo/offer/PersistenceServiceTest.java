@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.pezzati.yo.offer.exception.InvalidOffer;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 import edu.pezzati.yo.offer.model.util.DatabaseFeeder;
@@ -157,20 +158,20 @@ public class PersistenceServiceTest {
 	}
 
 	@Test
-	public void updateOfferByNullValue() throws OfferNotFound {
-		expectedException.expect(IllegalArgumentException.class);
+	public void updateOfferByNullValue() throws OfferNotFound, InvalidOffer {
+		expectedException.expect(InvalidOffer.class);
 		persistenceService.update(offer);
 	}
 
 	@Test
-	public void updateOfferByNonExistingOne() throws OfferNotFound {
+	public void updateOfferByNonExistingOne() throws OfferNotFound, InvalidOffer {
 		offer.setId(new ObjectId());
 		expectedException.expect(OfferNotFound.class);
 		persistenceService.update(offer);
 	}
 
 	@Test
-	public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
+	public void updateOfferByExistingButInvalidOne() throws OfferNotFound, InvalidOffer {
 		Offer offerToUpdate = offerToTest.get(0);
 		offerToUpdate.setLat(500D);
 		expectedException.expect(IllegalArgumentException.class);
@@ -178,7 +179,7 @@ public class PersistenceServiceTest {
 	}
 
 	@Test
-	public void updateOfferByExistingAndValidOne() throws OfferNotFound {
+	public void updateOfferByExistingAndValidOne() throws OfferNotFound, InvalidOffer {
 		Offer expectedOffer = offerToTest.get(0);
 		String title = "a brand new title";
 		expectedOffer.setTitle(title);
