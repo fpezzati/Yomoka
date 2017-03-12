@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.pezzati.yo.offer.exception.InvalidOffer;
 import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 
@@ -26,7 +27,7 @@ public class HandleServiceExceptionImpl {
 	log.info(invocationContext.getMethod().getName());
 	try {
 	    return invocationContext.proceed();
-	} catch (IllegalArgumentException | NotEnoughOfferElements iae) {
+	} catch (InvalidOffer | IllegalArgumentException | NotEnoughOfferElements iae) {
 	    log.error(INVALID_INPUT, iae);
 	    return Response.status(400).entity(iae.getMessage()).type(MediaType.TEXT_HTML).build();
 	} catch (OfferNotFound onf) {
