@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.bson.types.ObjectId;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.pezzati.yo.offer.exception.InvalidOffer;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 import edu.pezzati.yo.offer.util.WeldRunner;
@@ -24,7 +26,7 @@ import edu.pezzati.yo.offer.util.WeldRunner;
 @RunWith(WeldRunner.class)
 public class PersistenceServiceTest {
 
-    private static final String OFFERSET_PATH = "PERSISTENCE/offerset.js";
+    public static final String OFFERSET_PATH = "PERSISTENCE/offerset.js";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -33,27 +35,31 @@ public class PersistenceServiceTest {
     @PersistenceUnit(name = "yodb")
     private OfferPersistenceService persistenceService;
     private Offer offer;
-    private List<Offer> offerToTest;
+    private static List<Offer> offerToTest;
 
-    private ObjectMapper objectMapper;
-
+    private static ObjectMapper objectMapper;
     private static File offerSetFile;
 
     @BeforeClass
-    public static void loadTestData() {
+    public static void loadTestData() throws Exception {
 	offerSetFile = new File(PersistenceServiceTest.class.getClassLoader().getResource(OFFERSET_PATH).getFile());
+	objectMapper = new ObjectMapper();
     }
 
     @Before
     public void init() throws Exception {
 	offer = new Offer(null, "title", "description", new ObjectId(), 1D, 5, 2D, 3D);
-	objectMapper = new ObjectMapper();
 	offerToTest = objectMapper.readValue(offerSetFile, new TypeReference<List<Offer>>() {
 	});
-	for (Offer offerTest : offerToTest) {
-	    Offer createdOffer = persistenceService.create(offerTest);
-	    offerTest.setId(createdOffer.getId());
+	for (Offer offer : offerToTest) {
+	    offer.setId(null);
+	    offer = persistenceService.create(offer);
 	}
+    }
+
+    @After
+    public void reset() {
+	persistenceService.getEntityManager().createNativeQuery("db.collection.remove()");
     }
 
     @Test
@@ -147,20 +153,20 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void updateOfferByNullValue() throws OfferNotFound {
-	expectedException.expect(IllegalArgumentException.class);
+    public void updateOfferByNullValue() throws OfferNotFound, InvalidOffer {
+	expectedException.expect(InvalidOffer.class);
 	persistenceService.update(offer);
     }
 
     @Test
-    public void updateOfferByNonExistingOne() throws OfferNotFound {
+    public void updateOfferByNonExistingOne() throws OfferNotFound, InvalidOffer {
 	offer.setId(new ObjectId());
 	expectedException.expect(OfferNotFound.class);
 	persistenceService.update(offer);
     }
 
     @Test
-    public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
+    public void updateOfferByExistingButInvalidOne() throws OfferNotFound, InvalidOffer {
 	Offer offerToUpdate = offerToTest.get(0);
 	offerToUpdate.setLat(500D);
 	expectedException.expect(IllegalArgumentException.class);
@@ -168,7 +174,7 @@ public class PersistenceServiceTest {
     }
 
     @Test
-    public void updateOfferByExistingAndValidOne() throws OfferNotFound {
+    public void updateOfferByExistingAndValidOne() throws OfferNotFound, InvalidOffer {
 	Offer expectedOffer = offerToTest.get(0);
 	String title = "a brand new title";
 	expectedOffer.setTitle(title);

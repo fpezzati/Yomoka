@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
+@Table(name = "offer")
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({ "id", "title", "desc", "ownerId", "price", "amount", "lat", "lon" })
 public class Offer {
@@ -74,7 +76,7 @@ public class Offer {
     private Double lon;
 
     public Offer() {
-	// Empty constructor to be an entity.
+	// Entity empty constructor.
     }
 
     public Offer(ObjectId id, String title, String desc, ObjectId ownerId, Double price, Integer amount, Double lat,

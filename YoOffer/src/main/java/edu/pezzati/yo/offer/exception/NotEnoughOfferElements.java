@@ -1,10 +1,14 @@
 package edu.pezzati.yo.offer.exception;
 
-public class NotEnoughOfferElements extends Exception {
+public class NotEnoughOfferElements extends OfferException {
 
-    private static final long serialVersionUID = 2974571257496673674L;
+	public NotEnoughOfferElements(String message) {
+		super(message);
+	}
 
-    public NotEnoughOfferElements() {
-	super();
-    }
+	public NotEnoughOfferElements() {
+		super();
+	}
+
+	private static final long serialVersionUID = 2974571257496673674L;
 }

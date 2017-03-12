@@ -1,7 +1,9 @@
 package edu.pezzati.yo.offer;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,61 +13,106 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.bson.types.ObjectId;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.pezzati.yo.offer.exception.NotEnoughOfferElements;
+import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 
 public class OfferServiceIT {
 
     private static String webContext;
+    private static File offerSetFile;
     private static final String PROTOCOL = "http://";
     private static final String PORT = ":8080";
     private static final String YOOFFER = "/YoOffer/srv/offer";
+    private static final String PICKURL = "/pick";
     private Offer offer;
 
-    // @PersistenceUnit(name = "yodb")
-    // private OfferPersistenceServiceImpl persistenceService;
-    // @Inject
-    // @InjectMocks
-    // private OfferServiceImpl offerService;
-    private static final int OK = 200;
-    private static final int INVALID_INPUT = 400;
-    private static final int NOT_FOUND = 404;
-    private static final int ERROR = 500;
+    public static final int OK = 200;
+    public static final int INVALID_INPUT = 400;
+    public static final int NOT_FOUND = 404;
+    public static final int ERROR = 500;
     private Client client;
     private WebTarget webTarget;
+    private WebTarget pickWebTarget;
+    private WebTarget setupDatabase;
+    private WebTarget resetDatabase;
+    private Response response;
+    private List<Offer> offerToTest;
+    private static ObjectMapper objectMapper;
 
     @BeforeClass
     public static void setup() {
 	webContext = PROTOCOL + System.getProperty("webContext") + PORT + YOOFFER;
-	System.out.println("webContext: " + webContext);
+	offerSetFile = new File(PersistenceServiceTest.class.getClassLoader()
+		.getResource(PersistenceServiceTest.OFFERSET_PATH).getFile());
+	objectMapper = new ObjectMapper();
     }
 
     @Before
-    public void init() throws URISyntaxException {
+    public void init() throws Exception {
 	client = ClientBuilder.newClient();
 	webTarget = client.target(new URI(webContext));
+	pickWebTarget = client.target(new URI(webContext + PICKURL));
+	offer = new Offer(null, "title", "description", new ObjectId(), 1D, 5, 2D, 3D);
+	setupDatabase();
+    }
+
+    private void setupDatabase() throws Exception {
+	offerToTest = objectMapper.readValue(offerSetFile, new TypeReference<List<Offer>>() {
+	});
+	setupDatabase = client.target(new URI(webContext));
+	for (Offer offer : offerToTest) {
+	    Response response = setupDatabase.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	    if (response.getStatus() != 200)
+		throw new Exception("Setup database fails.");
+	    offer.setId(response.readEntity(Offer.class).getId());
+	    response.close();
+	}
+    }
+
+    private void resetDatabase() throws Exception {
+	for (Offer offer : offerToTest) {
+	    if (offer.getId() != null) {
+		resetDatabase = client.target(new URI(webContext + "/" + offer.getId().toString()));
+		Response response = resetDatabase.request(MediaType.APPLICATION_JSON).delete();
+		if (response.getStatus() != 200 && response.getStatus() != 404)
+		    throw new Exception("Reset database fails.");
+		response.close();
+	    }
+	}
+	offerToTest = objectMapper.readValue(offerSetFile, new TypeReference<List<Offer>>() {
+	});
+    }
+
+    @After
+    public void cleanup() throws Exception {
+	if (response != null) {
+	    response.close();
+	}
+	resetDatabase();
     }
 
     @Test
     public void createNullOffer() throws URISyntaxException {
-	System.out.println("createNullOffer test, webContext: " + webContext);
 	offer = null;
-	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 	Assert.assertEquals(INVALID_INPUT, response.getStatus());
     }
 
-    // @Test
+    @Test
     public void createInvalidOffer() {
 	offer = new Offer(null, null, null, null, null, 4, 200D, 90D);
-	String expectedMessage = Offer.class.getName() + " is not valid: " + offer.toString();
-	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 	Assert.assertEquals(INVALID_INPUT, response.getStatus());
-	String actualMessage = response.readEntity(String.class);
-	Assert.assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
@@ -78,256 +125,100 @@ public class OfferServiceIT {
 	double lat = 2D;
 	double lon = 3D;
 	offer = new Offer(null, title, desc, ownerId, price, amount, lat, lon);
-	Response response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	response = webTarget.request().post(Entity.entity(offer, MediaType.APPLICATION_JSON));
 	Assert.assertEquals(OK, response.getStatus());
 	Offer actualOffer = response.readEntity(Offer.class);
 	offer.setId(actualOffer.getId());
+	offerToTest.add(offer);
 	Assert.assertEquals(offer, actualOffer);
     }
-    //
-    // @Test
-    // public void createOfferError() {
-    // offer = new Offer();
-    // String expectedMessage = "Unexpected internal error";
-    // Mockito.when(persistenceService.create(offer)).thenThrow(new
-    // RuntimeException(expectedMessage));
-    // Response response = offerService.create(offer);
-    // Assert.assertEquals(ERROR, response.getStatus());
-    // String actualMessage = response.getEntity().toString();
-    // Assert.assertEquals(expectedMessage, actualMessage);
-    // }
-    //
-    // @Test
-    // public void readOfferByNullValue() throws OfferNotFound {
-    // ObjectId offerId = null;
-    // Mockito.when(persistenceService.read(offerId)).thenThrow(new
-    // IllegalArgumentException());
-    // Response response = offerService.read(offerId);
-    // Mockito.verify(persistenceService, Mockito.times(1)).read(offerId);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void readOfferByNonExistingId() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // Mockito.when(persistenceService.read(offerId)).thenThrow(new
-    // OfferNotFound());
-    // Response response = offerService.read(offerId);
-    // Mockito.verify(persistenceService, Mockito.times(1)).read(offerId);
-    // Assert.assertEquals(NOT_FOUND, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void readOfferByExistingId() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // ObjectId ownerId = new ObjectId();
-    // offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-    // Mockito.when(persistenceService.read(offerId)).thenReturn(offer);
-    // Response response = offerService.read(offerId);
-    // Mockito.verify(persistenceService, Mockito.times(1)).read(offerId);
-    // Assert.assertEquals(OK, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void readOfferError() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // String expectedMessage = "Unexpected internal error";
-    // Mockito.when(persistenceService.read(offerId)).thenThrow(new
-    // RuntimeException(expectedMessage));
-    // Response response = offerService.read(offerId);
-    // Assert.assertEquals(ERROR, response.getStatus());
-    // String actualMessage = response.getEntity().toString();
-    // Assert.assertEquals(expectedMessage, actualMessage);
-    // }
-    //
-    // @Test
-    // public void updateOfferByNullValue() throws OfferNotFound {
-    // ObjectId ownerId = new ObjectId();
-    // offer = new Offer(null, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-    // String expectedMessage = "Invalid offer: " + offer.toString();
-    // Mockito.when(persistenceService.update(offer)).thenThrow(new
-    // IllegalArgumentException(expectedMessage));
-    // Response response = offerService.update(offer);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // String actualMessage = response.getEntity().toString();
-    // Assert.assertEquals(expectedMessage, actualMessage);
-    // }
-    //
-    // @Test
-    // public void updateOfferByNonExistingOne() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // ObjectId ownerId = new ObjectId();
-    // offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-    // Mockito.when(persistenceService.update(offer)).thenThrow(new
-    // OfferNotFound());
-    // Response response = offerService.update(offer);
-    // Assert.assertEquals(NOT_FOUND, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // offer = new Offer(offerId, "title", "desc", null, 1D, 5, 2D, 3D);
-    // Mockito.when(persistenceService.update(offer)).thenThrow(new
-    // IllegalArgumentException());
-    // Response response = offerService.update(offer);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void updateOfferByExistingAndValidOne() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // ObjectId ownerId = new ObjectId();
-    // offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
-    // Mockito.when(persistenceService.update(offer)).thenReturn(offer);
-    // Response response = offerService.update(offer);
-    // Assert.assertEquals(OK, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void deleteOfferByNullValue() throws OfferNotFound {
-    // ObjectId offerId = null;
-    // Mockito.when(persistenceService.delete(offerId)).thenThrow(new
-    // IllegalArgumentException());
-    // Response response = offerService.delete(offerId);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void deleteOfferByNonExistingId() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // Mockito.when(persistenceService.delete(offerId)).thenThrow(new
-    // OfferNotFound());
-    // Response response = offerService.delete(offerId);
-    // Assert.assertEquals(NOT_FOUND, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void deleteOfferByExistingId() throws OfferNotFound {
-    // ObjectId offerId = new ObjectId();
-    // ObjectId ownerId = new ObjectId();
-    // Offer expectedOffer = new Offer(offerId, "title", "desc", ownerId, 1D, 5,
-    // 2D, 3D);
-    // Mockito.when(persistenceService.delete(offerId)).thenReturn(expectedOffer);
-    // Response response = offerService.delete(offerId);
-    // Offer actualOffer = (Offer) response.getEntity();
-    // Assert.assertEquals(OK, response.getStatus());
-    // Assert.assertEquals(expectedOffer, actualOffer);
-    // }
-    //
-    // @Test
-    // public void pickItemsAboutNonExistingOffer() throws OfferNotFound,
-    // NotEnoughOfferElements {
-    // offer = Mockito.mock(Offer.class);
-    // Mockito.when(offer.getId()).thenReturn(new ObjectId());
-    // Mockito.when(persistenceService.read(offer.getId())).thenThrow(new
-    // OfferNotFound());
-    // Response response = offerService.pick(offer);
-    // Assert.assertEquals(NOT_FOUND, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void pickTooMuchItems() throws OfferNotFound,
-    // NotEnoughOfferElements {
-    // offer = Mockito.mock(Offer.class);
-    // offerService = Mockito.spy(offerService);
-    // Offer offerToPick = new Offer();
-    // Mockito.when(persistenceService.read(offer.getId())).thenReturn(offerToPick);
-    // Mockito.when(offer.canPick(offerToPick)).thenReturn(false);
-    // Response response = offerService.pick(offer);
-    // Assert.assertEquals(INVALID_INPUT, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void pickEnoughItems() throws OfferNotFound,
-    // NotEnoughOfferElements {
-    // offerService = Mockito.spy(offerService);
-    // offer = Mockito.mock(Offer.class);
-    // Offer offerToPick = Mockito.mock(Offer.class);
-    // Mockito.when(persistenceService.read(offer.getId())).thenReturn(offerToPick);
-    // Mockito.when(offer.canPick(offerToPick)).thenReturn(true);
-    // Mockito.when(offer.getAmount()).thenReturn(10);
-    // Mockito.when(offerToPick.getAmount()).thenReturn(20);
-    // Response response = offerService.pick(offer);
-    // Assert.assertEquals(OK, response.getStatus());
-    // }
-    //
-    // @Test
-    // public void isOfferServicePathCorrectlyAnnotated() {
-    // Path path = (Path)
-    // AnnotationResolver.getTypeAnnotationByAnnotationType(OfferService.class,
-    // Path.class);
-    // String expectedPath = "/offer";
-    // String actualPath = path.value();
-    // Assert.assertEquals(expectedPath, actualPath);
-    // }
-    //
-    // @Test
-    // public void isOfferServiceCreateMethodCorrectlyAnnotated() throws
-    // Exception {
-    // Method method = OfferService.class.getMethod("create", Offer.class);
-    // POST post = (POST)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // POST.class);
-    // Assert.assertNotNull(post);
-    // }
-    //
-    // @Test
-    // public void isOfferServiceReadMethodCorrectlyAnnotated() throws Exception
-    // {
-    // Method method = OfferService.class.getMethod("read", ObjectId.class);
-    // GET get = (GET)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // GET.class);
-    // Assert.assertNotNull(get);
-    // Path path = (Path)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // Path.class);
-    // String expectedPath = "/{id}";
-    // String actualPath = path.value();
-    // Assert.assertEquals(expectedPath, actualPath);
-    // }
-    //
-    // @Test
-    // public void isOfferServiceUpdateMethodCorrectlyAnnotated() throws
-    // Exception {
-    // Method method = OfferService.class.getMethod("update", Offer.class);
-    // PUT put = (PUT)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // PUT.class);
-    // Assert.assertNotNull(put);
-    // }
-    //
-    // @Test
-    // public void isOfferServiceDeleteMethodCorrectlyAnnotated() throws
-    // Exception {
-    // Method method = OfferService.class.getMethod("delete", ObjectId.class);
-    // DELETE delete = (DELETE)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // DELETE.class);
-    // Assert.assertNotNull(delete);
-    // Path path = (Path)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // Path.class);
-    // String expectedPath = "/{id}";
-    // String actualPath = path.value();
-    // Assert.assertEquals(expectedPath, actualPath);
-    // }
-    //
-    // @Test
-    // public void isOfferServicePickMethodCorrectlyAnnotated() throws Exception
-    // {
-    // Method method = OfferService.class.getMethod("pick", Offer.class);
-    // PUT put = (PUT)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // PUT.class);
-    // Assert.assertNotNull(put);
-    // Path path = (Path)
-    // AnnotationResolver.getMethodAnnotationByAnnotationType(method,
-    // Path.class);
-    // String expectedPath = "/pick";
-    // String actualPath = path.value();
-    // Assert.assertEquals(expectedPath, actualPath);
-    // }
-    //
+
+    @Test
+    public void readOfferByNonExistingId() throws OfferNotFound, URISyntaxException {
+	ObjectId offerId = new ObjectId();
+	webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+	response = webTarget.request(MediaType.APPLICATION_JSON).get();
+	Assert.assertEquals(NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void readOfferByExistingId() throws OfferNotFound, URISyntaxException {
+	ObjectId offerId = offerToTest.get(0).getId();
+	webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+	response = webTarget.request(MediaType.APPLICATION_JSON).get();
+	Assert.assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    public void updateOfferByNullValue() throws OfferNotFound {
+	ObjectId ownerId = new ObjectId();
+	offer = new Offer(null, "title", "desc", ownerId, 1D, 5, 2D, 3D);
+	response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(INVALID_INPUT, response.getStatus());
+    }
+
+    @Test
+    public void updateOfferByNonExistingOne() throws OfferNotFound {
+	ObjectId offerId = new ObjectId();
+	ObjectId ownerId = new ObjectId();
+	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2D, 3D);
+	response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void updateOfferByExistingButInvalidOne() throws OfferNotFound {
+	ObjectId offerId = new ObjectId();
+	offer = new Offer(offerId, "title", "desc", null, 1D, 5, 200D, 3D);
+	response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(INVALID_INPUT, response.getStatus());
+    }
+
+    @Test
+    public void updateOfferByExistingAndValidOne() throws OfferNotFound {
+	ObjectId offerId = offerToTest.get(0).getId();
+	ObjectId ownerId = new ObjectId();
+	offer = new Offer(offerId, "title", "desc", ownerId, 1D, 5, 2.5D, 3.6D);
+	response = webTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    public void deleteOfferByNonExistingId() throws OfferNotFound, URISyntaxException {
+	ObjectId offerId = new ObjectId();
+	webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+	response = webTarget.request(MediaType.APPLICATION_JSON).delete();
+	Assert.assertEquals(NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void deleteOfferByExistingId() throws OfferNotFound, URISyntaxException {
+	ObjectId offerId = offerToTest.get(0).getId();
+	webTarget = client.target(new URI(webContext + "/" + offerId.toString()));
+	response = webTarget.request(MediaType.APPLICATION_JSON).delete();
+	Assert.assertEquals(OK, response.getStatus());
+    }
+
+    @Test
+    public void pickItemsAboutNonExistingOffer() throws OfferNotFound, NotEnoughOfferElements {
+	ObjectId offerId = new ObjectId();
+	offer = new Offer(offerId, "title", "desc", null, 1D, 5, 200D, 3D);
+	response = pickWebTarget.request().put(Entity.entity(offer, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void pickTooMuchItems() throws OfferNotFound, NotEnoughOfferElements {
+	Offer offerToPick = new Offer();
+	response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(INVALID_INPUT, response.getStatus());
+    }
+
+    @Test
+    public void pickEnoughItems() throws OfferNotFound, NotEnoughOfferElements {
+	ObjectId offerId = offerToTest.get(0).getId();
+	Offer offerToPick = new Offer(offerId, null, null, null, null, 3, null, null);
+	response = pickWebTarget.request().put(Entity.entity(offerToPick, MediaType.APPLICATION_JSON));
+	Assert.assertEquals(OK, response.getStatus());
+    }
 }
