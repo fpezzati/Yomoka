@@ -16,6 +16,7 @@ import javax.validation.ValidatorFactory;
 import org.bson.types.ObjectId;
 
 import edu.pezzati.yo.offer.exception.InvalidOffer;
+import edu.pezzati.yo.offer.exception.OfferException;
 import edu.pezzati.yo.offer.exception.OfferNotFound;
 import edu.pezzati.yo.offer.model.Offer;
 
@@ -61,7 +62,7 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
     }
 
     @Override
-    public Offer update(Offer offer) throws OfferNotFound, InvalidOffer {
+    public Offer update(Offer offer) throws OfferException {
 	if (offer.getId() == null)
 	    throw new InvalidOffer("Invalid offer: " + offer.toString());
 	evaluateValidation(validator.validate(offer));
@@ -71,10 +72,9 @@ public class OfferPersistenceServiceImpl implements OfferPersistenceService {
 	    Offer foundOffer = entityM.find(Offer.class, offer.getId());
 	    if (foundOffer == null)
 		throw new OfferNotFound();
-	    offer = entityM.merge(offer);
-	    // entityM.refresh(offer);
+	    Offer updatedOffer = entityM.merge(offer);
 	    transaction.commit();
-	    return offer;
+	    return updatedOffer;
 	} catch (Exception e) {
 	    transaction.rollback();
 	    throw e;
