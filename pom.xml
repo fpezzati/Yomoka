@@ -22,7 +22,8 @@
 		<docker.plugin>0.19.0</docker.plugin>
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
 		<jacoco.report>${project.build.directory}/reports</jacoco.report>
-		<sonar.server>http://192.168.99.100:9000</sonar.server>
+		<local.sonar.server>http://192.168.99.100:9000</local.sonar.server>
+		<web.sonar.server>http://sonarqube.com:9000</web.sonar.server>
 	</properties>
 
 	<dependencies>
@@ -186,7 +187,7 @@
 
 	<profiles>
 		<profile>
-			<id>sonar</id>
+			<id>localsonar</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -195,7 +196,7 @@
 				<sonar.jdbc.driver>org.postgresql.Driver</sonar.jdbc.driver>
 				<sonar.jdbc.username>user</sonar.jdbc.username>
 				<sonar.jdbc.password>password</sonar.jdbc.password>
-				<sonar.host.url>${sonar.server}</sonar.host.url>
+				<sonar.host.url>${local.sonar.server}</sonar.host.url>
 				<sonar.junit.reportsPath>${jacoco.report}</sonar.junit.reportsPath>
 				<sonar.jacoco.reportPaths>${jacoco.exec}</sonar.jacoco.reportPaths>
 			</properties>
