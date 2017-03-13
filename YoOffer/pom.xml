@@ -64,7 +64,6 @@
 			<version>${resteasy}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>

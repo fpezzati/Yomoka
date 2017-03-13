@@ -147,6 +147,9 @@
 						<configuration>
 							<dataFile>${jacoco.exec}</dataFile>
 							<outputDirectory>${jacoco.report}</outputDirectory>
+							<excludes>
+								<exclude>**/edu/pezzati/yo/offer/YoOfferApp*</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>

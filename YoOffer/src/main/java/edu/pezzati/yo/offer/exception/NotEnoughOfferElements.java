@@ -4,10 +4,6 @@ public class NotEnoughOfferElements extends OfferException {
 
     private static final long serialVersionUID = 2974571257496673674L;
 
-    public NotEnoughOfferElements(String message) {
-	super(message);
-    }
-
     public NotEnoughOfferElements() {
 	super();
     }
