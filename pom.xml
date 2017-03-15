@@ -23,6 +23,7 @@
 		<jacoco.exec>${project.build.directory}/jacoco-ut.exec</jacoco.exec>
 		<jacoco.report>${project.build.directory}/reports</jacoco.report>
 		<sonar.server>http://192.168.99.100:9000</sonar.server>
+		<swagger>1.5.10</swagger>
 	</properties>
 
 	<dependencies>
@@ -107,6 +108,22 @@
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-bom</artifactId>
 				<version>${resteasy}</version>
+			</dependency>
+			<!-- SWAGGER -->
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jaxrs</artifactId>
+				<version>${swagger}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-core</artifactId>
+				<version>${swagger}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${swagger}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
