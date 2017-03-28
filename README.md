@@ -24,7 +24,14 @@ I choose Git as version control system. Git is widely used and freely supported,
 
 eventuali scelte di design e implementazione
 --------------------------------------------
-As TDD says, I start to write tests before implement features but I wrote some spec on Trello for first.
+I decide about a small set of classes:
+```
+edu.pezzati.yo.offer.OfferPersistenceService
+edu.pezzati.yo.offer.OfferService
+edu.pezzati.yo.offer.model.Offer
+```
+of course that was what I had in mind, as TDD says, I start to write tests before implement features. I wrote tests from the simplests to the complexes. So first comes tests about data model, the Offer: JSON serialization, deserialization, and test about equals method.
+Then comes tests about configuration. I read a couple of blogs about testing web serivices and entities. 
 
 When writing tests I follow a bottom up approach. Tests came with this order (this is also the storyline as git log shows):
 
